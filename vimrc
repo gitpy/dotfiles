@@ -203,6 +203,8 @@ Plug 'nanotech/jellybeans.vim'
 Plug 'sjl/badwolf'
 " Molokai
 Plug 'tomasr/molokai'
+" Atom Dark
+Plug 'gosukiwi/vim-atom-dark'
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
@@ -321,6 +323,7 @@ filetype indent on
 set foldmethod=marker                       " Markers are used to specify folds.
 set foldlevel=2                             " Start folding automatically from level 2
 set fillchars="fold: "                      " Characters to fill the statuslines and vertical separators
+set fillchars+="vert: "
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
@@ -1118,7 +1121,8 @@ syntax on
 
 " Color scheme based on time {{{
 let g:rehash256=1
-colorscheme molokai
+set t_Co=256
+colorscheme atom-dark
 "}}}
 
 " Highlight VCS conflict markers {{{
@@ -1144,6 +1148,8 @@ hi! link BufTabLineActive Comment
 hi! link BufTabLineHidden Comment
 hi! link BufTabLineFill Comment
 "}}}
+
+hi! VertSplit cterm=NONE ctermbg=NONE gui=NONE guibg=NONE guifg=NONE
 
 "}}}
 
