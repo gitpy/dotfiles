@@ -499,6 +499,10 @@ nnoremap ,p "+p
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
 
+" Move line up
+nnoremap <A-k> :m -2<CR>
+nnoremap <A-j> :m +1<CR>
+
 " CTags generation / navigation (:tselect to select from menu)
 nnoremap ]t :tn<CR>
 nnoremap [t :tp<CR>
