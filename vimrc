@@ -87,6 +87,17 @@ Plug 'tpope/vim-sleuth'
 "Plug 'lilydjwg/colorizer', { 'for': ['css', 'sass', 'scss', 'less', 'html', 'xhtml', 'javascript', 'javascript.jsx'] }
 "}}}
 
+
+" -----------------------------------------------------
+" C/C++ {{{
+" -----------------------------------------------------
+
+"  Clang Languages Syntax Highlighting
+" Plug 'arakashic/chromatica.nvim', { 'for': ['c','cpp'] }
+" Plug 'vim-scripts/c.vim'
+Plug 'octol/vim-cpp-enhanced-highlight'
+" }}}
+
 " ---------------------------------------------------------------------------------------------------------------------
 " Other languages {{{
 " ---------------------------------------------------------------------------------------------------------------------
@@ -194,17 +205,28 @@ Plug 'wellle/targets.vim'
 " ---------------------------------------------------------------------------------------------------------------------
 " Colorschemes {{{
 " ---------------------------------------------------------------------------------------------------------------------
-
-" Hybrid
-Plug 'w0ng/vim-hybrid'
-" Jellybeans
-Plug 'nanotech/jellybeans.vim'
-" Badwolf
-Plug 'sjl/badwolf'
-" Molokai
-Plug 'tomasr/molokai'
-" Atom Dark
-Plug 'gosukiwi/vim-atom-dark'
+Plug 'cocopon/lightline-hybrid.vim'
+Plug 'rakr/vim-one'
+" Plug 'tomasr/molokai'
+" Plug 'w0ng/vim-hybrid'
+" Plug 'nanotech/jellybeans.vim'
+" Plug 'sjl/badwolf'
+" Plug 'jdkanani/vim-material-theme'
+" Plug 'dracula/vim'
+" Plug 'rakr/vim-two-firewatch'
+" Plug 'chriskempson/vim-tomorrow-theme'
+" Plug 'w0ng/vim-hybrid'
+" Plug 'jacoborus/tender.vim'
+" Plug 'morhetz/gruvbox'
+" Plug 'jnurmine/Zenburn'
+" Plug 'tpope/vim-vividchalk'
+" Plug 'chriskempson/base16-vim'
+" Plug 'notpratheek/vim-luna'
+" Plug 'kristijanhusak/vim-hybrid-material'
+" Plug 'cseelus/vim-colors-lucid'
+" Plug 'vim-scripts/peaksea'
+" Plug 'mhinz/vim-janah'
+" Plug 'roosta/vim-srcery'
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
@@ -342,7 +364,16 @@ set wildignore+=tmp/**
 " 2.10 Neovim specific settings {{{
 " ---------------------------------------------------------------------------------------------------------------------
 let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1       " Set an environment variable to use the t_SI/t_EI hack
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1         " Turn on true colors support
+if (has("nvim"))
+"For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
+"For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+"Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+" < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+if (has("termguicolors"))
+  set termguicolors
+endif
 "}}}
 
 " -----------------------------------------------------
@@ -356,9 +387,8 @@ let $NVIM_TUI_ENABLE_TRUE_COLOR=1         " Turn on true colors support
 "}}}
 
 " ======================================================================================================================
-" 3.0 Mapping settings
+" 3.0 Mapping settings {{{
 " ======================================================================================================================
-"{{{
 
 " -----------------------------------------------------
 " 3.1 Setting leader {{{
@@ -555,7 +585,7 @@ nnoremap <silent> <F3> :set paste!<CR> :set paste?<CR>
 " Toggle spelling on and off
 nnoremap <silent> <F4> :set spell!<CR> :set spell?<CR>
 " Source (reload configuration)
-nnoremap <silent> <F5> :source $MYNVIMRC<CR>
+nnoremap <silent> <F5> :source $MYVIMRC<CR>
 " Toggle search highlight
 nnoremap <silent> <F6> :set nohlsearch!<CR> :set nohlsearch?<CR>
 " Toggle white characters visibility
@@ -634,7 +664,6 @@ map ä ]
 map Ö {
 map Ä }
 map ß /
-
 "}}}
 
 "}}}
@@ -789,7 +818,7 @@ let g:jsx_ext_required=0
 " 4.7 Lightline settings {{{
 " -----------------------------------------------------
  let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'hybrid',
       \ 'tab': {
       \   'active': [ 'filename' ],
       \   'inactive': [ 'filename' ]
@@ -927,12 +956,16 @@ let g:markdown_fenced_languages=[
 let g:colorizer_nomap=1
 "}}}
 
+" -----------------------------------------------------
+" 4.20 Chromatica settings {{{
+" -----------------------------------------------------
+let g:chromatica#enable_at_startup = 1
 "}}}
 
-" ======================================================================================================================
-" 5.0 Plugin mappings
-" ======================================================================================================================
-"{{{
+" ==============================================================================
+" 5.0 Plugin mappings {{{
+" ==============================================================================
+
 " -----------------------------------------------------
 " 5.1 Unite and extensions {{{
 " -----------------------------------------------------
@@ -1111,18 +1144,28 @@ nnoremap <leader>gh :Gitv!<CR>
 
 "}}}
 
-" ======================================================================================================================
-" 6.0 Color and highlighting settings
-" ======================================================================================================================
-"{{{
+" ==============================================================================
+" 6.0 Color and highlighting settings {{{
+" ==============================================================================
+
 " Syntax highlighting {{{
 syntax on
 "}}}
 
-" Color scheme based on time {{{
-let g:rehash256=1
+" Color scheme {{{
+" let g:rehash256=1
 set t_Co=256
-colorscheme atom-dark
+set background=dark
+let g:gruvbox_contrast_dark="medium"
+" let g:enable_bold_font = 1
+colorscheme one
+"}}}
+
+" Custom ColorScheme Settings {{{
+" highlight Normal guibg=#1d1f21
+" highlight Normal guibg=#282c34
+" highlight Normal guibg=#fbf1c7 guifg=#494b53
+autocmd! ColorScheme * if &background ==# 'dark'  | highlight Normal guibg=#282c34 | else | highlight Normal guibg=#fafafa | endif
 "}}}
 
 " Highlight VCS conflict markers {{{
@@ -1130,33 +1173,34 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 "}}}
 
 " Highlight term cursor differently {{{
-highlight TermCursor ctermfg=green guifg=green
+" highlight TermCursor ctermfg=green guifg=green
 "}}}
 
 " Listchars highlighting {{{
-highlight NonText ctermfg=235 guifg=gray
-highlight SpecialKey ctermfg=235 guifg=gray
+" highlight NonText ctermfg=235 guifg=gray
+" highlight SpecialKey ctermfg=235 guifg=gray
 "}}}
 
 " Remove underline in folded lines {{{
-hi! Folded term=NONE cterm=NONE gui=NONE ctermbg=NONE
+" hi! Folded term=NONE cterm=NONE gui=NONE ctermbg=NONE
 "}}}
 
 " Link highlight groups to improve buftabline colors {{{
-hi! link BufTabLineCurrent Identifier
-hi! link BufTabLineActive Comment
-hi! link BufTabLineHidden Comment
-hi! link BufTabLineFill Comment
+" hi! link BufTabLineCurrent Identifier
+" hi! link BufTabLineActive Comment
+" hi! link BufTabLineHidden Comment
+" hi! link BufTabLineFill Comment
 "}}}
 
-hi! VertSplit cterm=NONE ctermbg=NONE gui=NONE guibg=NONE guifg=NONE
+" Make Split Line Invisible {{{
+" hi! VertSplit cterm=NONE ctermbg=NONE gui=NONE guibg=NONE guifg=NONE
+"}}}
 
 "}}}
 
-" ======================================================================================================================
-" 7.0 Autocommands
-" ======================================================================================================================
-"{{{
+" ==============================================================================
+" 7.0 Autocommands {{{
+" ==============================================================================
 
 " Keywordprg settings {{{
 autocmd FileType vim setlocal keywordprg=:help
@@ -1191,10 +1235,13 @@ if g:utils_autoswitch_kb_layout == 1
 end
 "}}}
 
+" Auto reload config {{{
+autocmd! BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc,init.vim nested so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
+"}}}
+
 " -----------------------------------------------------
 " 7.1 Run linters after save {{{
 " -----------------------------------------------------
-
 " npm install -g eslint
 autocmd BufWritePost *.js Neomake eslint
 " npm install -g jsonlint
@@ -1219,14 +1266,14 @@ autocmd BufWritePost *.sh Neomake shellcheck
 "autocmd BufWritePost *.vim Neomake vint
 " apt-get install clang-tidy
 autocmd BufWritePost *.{c,h} Neomake clang
-autocmd BufWritePost *.cpp Neomake clang++
+autocmd BufWritePost *.cpp Neomake clang
 " sudo apt-get install rust
 autocmd BufWritepost *.rs Neomake rustc
 "}}}
 
-" -----------------------------------------------------
-" 8.0 Functions
-" -----------------------------------------------------
+" ==============================================================================
+" 8.0 Functions {{{
+" ==============================================================================
 
 " Informative echo line
 function! ShowToggles() abort
@@ -1559,3 +1606,5 @@ function! RetabToFourSpaces() abort
   setlocal tabstop=4 shiftwidth=4 expandtab
   retab
 endfunction
+
+"}}}

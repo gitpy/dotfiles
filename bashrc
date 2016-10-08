@@ -126,5 +126,3 @@ mvg (){
   fi
 }
 
-
-. /home/cp/torch/install/bin/torch-activate
