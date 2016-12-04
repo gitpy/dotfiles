@@ -27,16 +27,18 @@ call plug#begin('~/.config/nvim/plugged')
 " Asynchronous maker and linter (needs linters to work)
 Plug 'benekastah/neomake', { 'on': ['Neomake'] }
 " Autocomplete
-Plug 'Shougo/deoplete.nvim'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'zchee/deoplete-clang'
 " Automatically closing pair stuff
 Plug 'cohama/lexima.vim'
 "Plug 'raimondi/delimitmate'
 " Snippet support (C-j)
 Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 " Commenting support (gc)
 Plug 'tpope/vim-commentary'
 " CamelCase and snake_case motions
-Plug 'bkad/CamelCaseMotion'
+"Plug 'bkad/CamelCaseMotion'
 " Heuristically set indent settings
 Plug 'tpope/vim-sleuth'
 "}}}
@@ -903,9 +905,10 @@ let g:qs_highlight_on_keys=['f', 'F', 't', 'T']
 " -----------------------------------------------------
 let g:deoplete#enable_at_startup=1
 let g:deoplete#enable_refresh_always=1
-let g:deoplete#auto_complete_start_length=2
 let g:deoplete#file#enable_buffer_path=1
+let g:deoplete#disable_auto_complete = 1
 
+set completeopt=noselect,menuone,longest
 let g:deoplete#sources={}
 let g:deoplete#sources._    = ['buffer', 'file', 'ultisnips']
 let g:deoplete#sources.ruby = ['buffer', 'member', 'file', 'ultisnips']
@@ -914,7 +917,12 @@ let g:deoplete#sources['javascript.jsx'] = ['buffer', 'member', 'file', 'ultisni
 let g:deoplete#sources.css  = ['buffer', 'member', 'file', 'omni', 'ultisnips']
 let g:deoplete#sources.scss = ['buffer', 'member', 'file', 'omni', 'ultisnips']
 let g:deoplete#sources.html = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+let g:deoplete#sources.c = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+let g:deoplete#sources.cpp = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+let g:deoplete#sources#clang#libclang_path='/usr/lib/libclang.so'
+let g:deoplete#sources#clang#clang_header='/usr/include/clang'
 "}}}
+
 
 " -----------------------------------------------------
 " 4.15 Ctrl-SF settings {{{
@@ -1081,9 +1089,14 @@ nmap >a <Plug>Argumentative_MoveRight
 " -----------------------------------------------------
 " Insert <TAB> or select next match
 inoremap <silent> <expr> <Tab> TabComplete()
-
 " Manually trigger tag autocomplete
 inoremap <silent> <expr> <C-]> ManualTagComplete()
+
+if has("gui_running")
+  inoremap <silent><expr><C-Space> deoplete#mappings#manual_complete()
+else
+  inoremap <silent><expr><C-@> deoplete#mappings#manual_complete()
+endif
 
 " <C-h>, <BS>: close popup and delete backword char
 inoremap <expr><C-h> deolete#mappings#smart_close_popup()."\<C-h>"
@@ -1403,7 +1416,7 @@ function! TabComplete() abort
     if !l:col || getline('.')[l:col - 1] !~# '\k'
       return "\<TAB>"
     else
-      return "\<C-n>"
+      return deoplete#mappings#manual_complete()
     endif
   endif
 endfunction
@@ -1442,7 +1455,7 @@ function! UniteFileBrowse() abort
 endfunction
 
 function! UniteFileRec() abort
-  execute 'Unite -no-split -buffer-name=file-recursive-search -start-insert file_rec/neovim'
+  execute 'Unite -no-split -ignorecase -buffer-name=file-recursive-search -start-insert file_rec/neovim'
 endfunction
 
 function! UniteBuffers() abort
