@@ -3,9 +3,8 @@
 " ######################################################################################################################
 
 " ======================================================================================================================
-" 1.0 Plugin manager (Plug) settings
+" 1.0 Plugin manager (Plug) settings {{{
 " ======================================================================================================================
-"{{{
 
 " Autoinstall {{{
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
@@ -16,22 +15,19 @@ endif
 " }}}
 call plug#begin('~/.config/nvim/plugged')
 
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-" 1.1 Plugin list
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 " ---------------------------------------------------------------------------------------------------------------------
 " Language agnostic plugins {{{
 " ---------------------------------------------------------------------------------------------------------------------
 
 " Asynchronous maker and linter (needs linters to work)
 Plug 'benekastah/neomake', { 'on': ['Neomake'] }
+" Formatter
+Plug 'sbdchd/neoformat'
 " Autocomplete
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-clang'
 " Automatically closing pair stuff
 Plug 'cohama/lexima.vim'
-"Plug 'raimondi/delimitmate'
 " Snippet support (C-j)
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -41,6 +37,8 @@ Plug 'tpope/vim-commentary'
 "Plug 'bkad/CamelCaseMotion'
 " Heuristically set indent settings
 Plug 'tpope/vim-sleuth'
+" Better syntax highlighting for many languages
+Plug 'sheerun/vim-polyglot'
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
@@ -49,10 +47,6 @@ Plug 'tpope/vim-sleuth'
 
 " Ruby support (plays nicely with tpope/rbenv-ctags)
 "Plug 'vim-ruby/vim-ruby'
-" Slim syntax
-"Plug 'slim-template/vim-slim'
-" Haml syntax
-"Plug 'tpope/vim-haml'
 " Minitest syntax
 "Plug 'sunaku/vim-ruby-minitest'
 " Rails support (:A, :R, :Rmigration, :Rextract)
@@ -62,29 +56,8 @@ Plug 'tpope/vim-sleuth'
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
-" JS (ES6, React) {{{
-" ---------------------------------------------------------------------------------------------------------------------
-
-" JS syntax
-"Plug 'jelera/vim-javascript-syntax'
-" JS libs syntax (React, Angular)
-"Plug 'othree/javascript-libraries-syntax.vim'
-" JSX syntax (needs vim-javascript for indentation)
-"Plug 'mxw/vim-jsx' | Plug 'pangloss/vim-javascript'
-" Typescript syntax
-"Plug 'leafgarland/typescript-vim'
-" JSON syntax
-"Plug 'sheerun/vim-json'
-"}}}
-
-" ---------------------------------------------------------------------------------------------------------------------
 " HTML/CSS {{{
 " ---------------------------------------------------------------------------------------------------------------------
-
-" HTML5 syntax
-"Plug 'othree/html5.vim'
-" SCSS syntax
-"Plug 'cakebaker/scss-syntax.vim'
 " Color highlighter
 "Plug 'lilydjwg/colorizer', { 'for': ['css', 'sass', 'scss', 'less', 'html', 'xhtml', 'javascript', 'javascript.jsx'] }
 "}}}
@@ -100,42 +73,24 @@ Plug 'tpope/vim-sleuth'
 Plug 'octol/vim-cpp-enhanced-highlight'
 " }}}
 
+
 " ---------------------------------------------------------------------------------------------------------------------
 " Other languages {{{
 " ---------------------------------------------------------------------------------------------------------------------
-
-" Elixir syntax
-"Plug 'elixir-lang/vim-elixir'
-" Elm syntax
-"Plug 'lambdatoast/elm.vim'
-" Yaml indentation
-"Plug 'martin-svk/vim-yaml'
-" Markdown syntax
-Plug 'tpope/vim-markdown'
-" Git syntax
-Plug 'tpope/vim-git'
-" Tmux syntax
-"Plug 'tejr/vim-tmux'
-" Dockerfile
-Plug 'honza/dockerfile.vim'
+Plug 'lervag/vimtex', { 'for': ['tex','bib'] }
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
-" Unite fuzzy searcher {{{
+" Denite fuzzy searcher {{{
 " ---------------------------------------------------------------------------------------------------------------------
 
-" Unite files, buffers, etc. sources
-Plug 'Shougo/unite.vim'
-" Outline source
-Plug 'Shougo/unite-outline'
+" Denite files, buffers, etc. sources
+" Plug 'Shougo/unite.vim'
+Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 " History/yank source
 Plug 'Shougo/neoyank.vim'
 " MRU source
 Plug 'Shougo/neomru.vim'
-" Tag source
-Plug 'tsukkee/unite-tag'
-" Ag wrapper (Unite grep alternative) search and edit
-Plug 'dyng/ctrlsf.vim', { 'on': ['CtrlSF', 'CtrlSFToggle'] }
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
@@ -209,6 +164,7 @@ Plug 'wellle/targets.vim'
 " ---------------------------------------------------------------------------------------------------------------------
 Plug 'cocopon/lightline-hybrid.vim'
 Plug 'rakr/vim-one'
+" Plug 'KeitaNakamura/neodark.vim'
 " Plug 'tomasr/molokai'
 " Plug 'w0ng/vim-hybrid'
 " Plug 'nanotech/jellybeans.vim'
@@ -253,20 +209,16 @@ Plug 'vim-scripts/BufOnly.vim', { 'on': 'Bonly' }
 Plug 'nelstrom/vim-qargs', { 'on': 'Qargs' }
 "}}}
 
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-" 1.2 End of plugin declaration
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 call plug#end()
 "}}}
 
 " ======================================================================================================================
 " 2.0 Basic settings (Neovim defaults: https://neovim.io/doc/user/vim_diff.html#nvim-option-defaults) {{{
 " ======================================================================================================================
-"{{{
 
-set shell=/bin/bash                         " Setting shell to zsh
+set shell=/bin/zsh                          " Setting shell to zsh
 set number                                  " Line numbers on
-set noshowmode                                " Always show mode
+set noshowmode                              " Always show mode
 set showcmd                                 " Show commands as you type them
 set textwidth=80                            " Text width is 80 characters
 set cmdheight=1                             " Command line height
@@ -365,25 +317,9 @@ set wildignore+=tmp/**
 " ---------------------------------------------------------------------------------------------------------------------
 " 2.10 Neovim specific settings {{{
 " ---------------------------------------------------------------------------------------------------------------------
-let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1       " Set an environment variable to use the t_SI/t_EI hack
-if (has("nvim"))
-"For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-endif
-"For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-"Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-" < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
 if (has("termguicolors"))
   set termguicolors
 endif
-"}}}
-
-" -----------------------------------------------------
-" 2.11 Ctags settings {{{
-" -----------------------------------------------------
-" For Ruby STD ctags use tpope/rbenv-ctags + vim-ruby
-" For gem ctags use tpope/gem-ctags + vim-bundler
-" -----------------------------------------------------
 "}}}
 
 "}}}
@@ -477,14 +413,14 @@ vnoremap p "_dP`]
 nnoremap p p`]
 
 " Use CamelCaseMotion instead of default motions
-map <silent> w <Plug>CamelCaseMotion_w
-map <silent> b <Plug>CamelCaseMotion_b
-map <silent> e <Plug>CamelCaseMotion_e
-map <silent> ge <Plug>CamelCaseMotion_ge
-sunmap w
-sunmap b
-sunmap e
-sunmap ge
+" map <silent> <leader>w <Plug>CamelCaseMotion_w
+" map <silent> <leader>b <Plug>CamelCaseMotion_b
+" map <silent> <leader>e <Plug>CamelCaseMotion_e
+" map <silent> <leader>ge <Plug>CamelCaseMotion_ge
+" sunmap w
+" sunmap b
+" sunmap e
+" sunmap ge
 
 " Fix the cw at the end of line bug default vim has special treatment (:help cw)
 nmap cw ce
@@ -647,12 +583,8 @@ command! Run :call RunCurrentFile()
 nnoremap <silent> ,r :Run<CR>
 
 " Reformat whole or selection from file
-command! Format :call FormatFile()
-nnoremap <silent> ,f :Format<CR>
-
-" Annotate file (show values in special # => comments)
-command! Annotate :call AnnotateFile()
-nnoremap <silent> ,a :Annotate<CR>
+nnoremap <silent> ,f :Neoformat<CR>
+vnoremap <silent> ,f :Neoformat<CR>
 
 " Profile
 command! Profile :call Profile()
@@ -675,9 +607,8 @@ map ß /
 "}}}
 
 " ======================================================================================================================
-" 4.0 Plugins settings
+" 4.0 Plugins settings {{{
 " ======================================================================================================================
-"{{{
 
 " -----------------------------------------------------
 " 4.1 Auto-switch sk -> en keyboard layouts {{{
@@ -686,55 +617,71 @@ let g:utils_autoswitch_kb_layout=0
 "}}}
 
 " -----------------------------------------------------
-" 4.2 Unite {{{
+" 4.2 Denite {{{
 " -----------------------------------------------------
 
 " Matcher settings
-call unite#filters#matcher_default#use(['matcher_fuzzy', 'matcher_hide_current_file'])
-call unite#filters#sorter_default#use(['sorter_rank'])
+" call unite#filters#matcher_default#use(['matcher_fuzzy', 'matcher_hide_current_file'])
+" call unite#filters#sorter_default#use(['sorter_rank'])
 
 " Use ag if available
 if executable('ag')
-  let g:unite_source_grep_command='ag'
-  let g:unite_source_grep_default_opts='--nocolor --line-numbers --nogroup -S -C0'
-  let g:unite_source_grep_recursive_opt=''
+  call denite#custom#var('file_rec', 'command',
+    \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
+endif
+if executable('rg')
+  call denite#custom#var('file_rec', 'command',
+    \ ['rg', '--files', '--glob', '!.git', ''])
 
-  " Set rec source command
-  let g:unite_source_rec_async_command = ['ag', '--follow', '--nocolor', '--nogroup', '--hidden', '-g', '']
+  call denite#custom#var('grep', 'command', ['rg'])
+  call denite#custom#var('grep', 'default_opts',
+                  \ ['--vimgrep', '--no-heading'])
+  call denite#custom#var('grep', 'recursive_opts', [])
+  call denite#custom#var('grep', 'pattern_opt', ['--regexp'])
+  call denite#custom#var('grep', 'separator', ['--'])
+  call denite#custom#var('grep', 'final_opts', [])
 endif
 
-" Custom profile
-call unite#custom#profile('default', 'context', {
-      \   'prompt': '» ',
-      \   'winheight': 15,
-      \ })
+call denite#custom#option('default', 'prompt', '>')
+
+call denite#custom#map(
+      \ 'insert',
+      \ '<ESC>',
+      \ '<denite:enter_mode:normal>',
+      \ 'noremap')
+call denite#custom#map(
+      \ 'normal',
+      \ '<ESC>',
+      \ '<denite:quit>',
+      \ 'noremap')
 
 " Add syntax highlighting
-let g:unite_source_line_enable_highlight=1
+let g:denite_source_line_enable_highlight=1
 
 " Dont override status line
-let g:unite_force_overwrite_statusline=0
+" let g:denite_force_overwrite_statusline=0
 
-" Custom unite menus
-let g:unite_source_menu_menus = {}
+" " Custom denite menus
+let s:dmenus = {}
 
 " Utils menu
-let g:unite_source_menu_menus.utils = {
-      \     'description' : 'Utility commands',
-      \ }
-let g:unite_source_menu_menus.utils.command_candidates = [
-      \       ['Run XMPFilter', 'Annotate'],
-      \       ['Format file', 'Format'],
-      \       ['Run file', 'Run'],
-      \       ['Generate Ctags', 'GTags'],
-      \       ['Show notes', 'Notes'],
-      \     ]
+let s:dmenus.utils = {
+    \     'description' : 'Utility commands',
+    \ }
+let s:dmenus.utils.command_candidates = [
+    \       ['Run XMPFilter', 'Annotate'],
+    \       ['Format file', 'Format'],
+    \       ['Run file', 'Run'],
+    \       ['Generate Ctags', 'GTags'],
+    \       ['Show notes', 'Notes'],
+    \       ['Show highlight groups', 'so $VIMRUNTIME/syntax/hitest.vim'],
+    \     ]
 
 " Git menu
-let g:unite_source_menu_menus.git = {
+let s:dmenus.git = {
       \     'description' : 'Git commands',
       \ }
-let g:unite_source_menu_menus.git.command_candidates = [
+let s:dmenus.git.command_candidates = [
       \       ['Stage hunk', 'GitGutterStageHunk'],
       \       ['Unstage hunk', 'GitGutterRevertHunk'],
       \       ['Stage', 'Gwrite'],
@@ -748,41 +695,39 @@ let g:unite_source_menu_menus.git.command_candidates = [
       \     ]
 
 " Plug menu
-let g:unite_source_menu_menus.plug = {
+let s:dmenus.plug = {
       \     'description' : 'Plugin management commands',
       \ }
-let g:unite_source_menu_menus.plug.command_candidates = [
+let s:dmenus.plug.command_candidates = [
       \       ['Install plugins', 'PlugInstall'],
       \       ['Update plugins', 'PlugUpdate'],
       \       ['Clean plugins', 'PlugClean'],
       \       ['Upgrade vim-plug', 'PlugUpgrade'],
       \     ]
 
-" My unite menu
-let g:unite_source_menu_menus.unite = {
-      \     'description' : 'My Unite sources',
-      \ }
-let g:unite_source_menu_menus.unite.command_candidates = [
-      \       ['Unite MRUs', 'call uniteMRUs()'],
-      \       ['Unite buffers', 'call uniteBuffers()'],
-      \       ['Unite file browse', 'call uniteFileBrowse()'],
-      \       ['Unite file search', 'call uniteFileRec()'],
-      \       ['Unite history', 'call uniteHistory()'],
-      \       ['Unite line search', 'call uniteLineSearch()'],
-      \       ['Unite menu', 'call uniteCustomMenu()'],
-      \       ['Unite registers', 'call uniteRegisters()'],
-      \       ['Unite snippets', 'call uniteSnippets()'],
-      \       ['Unite sources', 'call uniteSources()'],
-      \       ['Unite file tags (symbols)', 'call uniteOutline()'],
-      \       ['Unite tags', 'call uniteTags()'],
-      \       ['Unite windows', 'call uniteWindows()'],
-      \       ['Unite yank history', 'call uniteYankHistory()'],
-      \       ['Unite jump history', 'call uniteJumps()'],
-      \     ]
+" " My unite menu
+" let s:dmenus.denite = {
+"       \     'description' : 'My Denite sources',
+"       \ }
+" let s:dmenus.unite.command_candidates = [
+"       \       ['Denite MRUs', 'call uniteMRUs()'],
+"       \       ['Denite buffers', 'call uniteBuffers()'],
+"       \       ['Denite file browse', 'call uniteFileBrowse()'],
+"       \       ['Denite file search', 'call uniteFileRec()'],
+"       \       ['Denite history', 'call uniteHistory()'],
+"       \       ['Denite line search', 'call uniteLineSearch()'],
+"       \       ['Denite menu', 'call uniteCustomMenu()'],
+"       \       ['Denite registers', 'call uniteRegisters()'],
+"       \       ['Denite snippets', 'call uniteSnippets()'],
+"       \       ['Denite sources', 'call uniteSources()'],
+"       \       ['Denite file tags (symbols)', 'call uniteOutline()'],
+"       \       ['Denite tags', 'call uniteTags()'],
+"       \       ['Denite windows', 'call uniteWindows()'],
+"       \       ['Denite yank history', 'call uniteYankHistory()'],
+"       \       ['Denite jump history', 'call uniteJumps()'],
+"       \     ]
 
-" Tag source settings
-let g:unite_source_tag_max_name_length=40
-let g:unite_source_tag_max_fname_length=50
+call denite#custom#var('menu', 'menus', s:dmenus)
 "}}}
 
 " -----------------------------------------------------
@@ -814,16 +759,11 @@ let g:UltiSnipsUsePythonVersion=3
 "let g:gitgutter_sign_removed_first_line='-'
 "}}}
 
-" -----------------------------------------------------
-" 4.6 Vim JSX highlighting settings {{{
-" -----------------------------------------------------
-let g:jsx_ext_required=0
-"}}}
 
 " -----------------------------------------------------
-" 4.7 Lightline settings {{{
+" 4.6 Lightline settings {{{
 " -----------------------------------------------------
- let g:lightline = {
+let g:lightline = {
       \ 'colorscheme': 'hybrid',
       \ 'tab': {
       \   'active': [ 'filename' ],
@@ -852,7 +792,7 @@ let g:jsx_ext_required=0
 "}}}
 
 " -----------------------------------------------------
-" 4.8 Neomake settings {{{
+" 4.7 Neomake settings {{{
 " -----------------------------------------------------
 let g:neomake_verbose=0
 let g:neomake_warning_sign = {
@@ -866,13 +806,13 @@ let g:neomake_error_sign = {
 "}}}
 
 " -----------------------------------------------------
-" 4.9 Ruby refactoring settings {{{
+" 4.8 Neoformat settings {{{
 " -----------------------------------------------------
-let g:ruby_refactoring_map_keys=0
+let g:neoformat_basic_format_align = 1
 "}}}
 
 " -----------------------------------------------------
-" 4.10 Clever F settings {{{
+" 4.9 Clever F settings {{{
 " -----------------------------------------------------
 let g:clever_f_across_no_line=1
 let g:clever_f_smart_case=1
@@ -881,27 +821,27 @@ let g:clever_f_chars_match_any_signs=';'
 "}}}
 
 " -----------------------------------------------------
-" 4.11 Vim Markdown settings {{{
+" 4.10 Vim Markdown settings {{{
 " -----------------------------------------------------
 let g:vim_markdown_no_default_key_mappings=1
 let g:vim_markdown_folding_disabled=1
 "}}}
 
 " -----------------------------------------------------
-" 4.12 Vim REST console settings {{{
+" 4.11 Vim REST console settings {{{
 " -----------------------------------------------------
 let g:vrc_set_default_mapping=0
 let g:vrc_output_buffer_name='__RESPONSE__.rest'
 "}}}
 
 " -----------------------------------------------------
-" 4.13 Quick scope settings {{{
+" 4.12 Quick scope settings {{{
 " -----------------------------------------------------
 let g:qs_highlight_on_keys=['f', 'F', 't', 'T']
 "}}}
 
 " -----------------------------------------------------
-" 4.14 Deoplete autocomplete settings {{{
+" 4.13 Deoplete autocomplete settings {{{
 " -----------------------------------------------------
 let g:deoplete#enable_at_startup=1
 let g:deoplete#enable_refresh_always=1
@@ -909,46 +849,54 @@ let g:deoplete#file#enable_buffer_path=1
 let g:deoplete#disable_auto_complete = 1
 
 set completeopt=noselect,menuone,longest
-let g:deoplete#sources={}
-let g:deoplete#sources._    = ['buffer', 'file', 'ultisnips']
-let g:deoplete#sources.ruby = ['buffer', 'member', 'file', 'ultisnips']
-let g:deoplete#sources.vim  = ['buffer', 'member', 'file', 'ultisnips']
-let g:deoplete#sources['javascript.jsx'] = ['buffer', 'member', 'file', 'ultisnips']
-let g:deoplete#sources.css  = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-let g:deoplete#sources.scss = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-let g:deoplete#sources.html = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-let g:deoplete#sources.c = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-let g:deoplete#sources.cpp = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-let g:deoplete#sources#clang#libclang_path='/usr/lib/libclang.so'
-let g:deoplete#sources#clang#clang_header='/usr/include/clang'
+
+call deoplete#custom#set('_', 'matchers', ['matcher_head'])
+call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
+
+let g:deoplete#ignore_sources = {}
+let g:deoplete#ignore_sources._ = ['buffer']
+
+
+if !exists('g:deoplete#omni#input_patterns')
+    let g:deoplete#omni#input_patterns = {}
+endif
+let g:deoplete#omni#input_patterns.tex = '\\(?:'
+      \ .  '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
+      \ . '|\w*ref(?:\s*\{[^}]*|range\s*\{[^,}]*(?:}{)?)'
+      \ . '|hyperref\s*\[[^]]*'
+      \ . '|includegraphics\*?(?:\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+      \ . '|(?:include(?:only)?|input)\s*\{[^}]*'
+      \ . '|\w*(gls|Gls|GLS)(pl)?\w*(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+      \ . '|includepdf(\s*\[[^]]*\])?\s*\{[^}]*'
+      \ . '|includestandalone(\s*\[[^]]*\])?\s*\{[^}]*'
+      \ . '|usepackage(\s*\[[^]]*\])?\s*\{[^}]*'
+      \ . '|documentclass(\s*\[[^]]*\])?\s*\{[^}]*'
+      \ . '|\w*'
+      \ .')'
+
+" let g:deoplete#sources={}
+" let g:deoplete#sources._    = ['buffer', 'file', 'ultisnips']
+" let g:deoplete#sources.ruby = ['buffer', 'member', 'file', 'ultisnips']
+" let g:deoplete#sources.vim  = ['buffer', 'member', 'file', 'ultisnips']
+" let g:deoplete#sources['javascript.jsx'] = ['buffer', 'member', 'file', 'ultisnips']
+" let g:deoplete#sources.css  = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+" let g:deoplete#sources.scss = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+" let g:deoplete#sources.html = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+" let g:deoplete#sources.c = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+" let g:deoplete#sources.cpp = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+" let g:deoplete#sources#clang#libclang_path='/usr/lib/libclang.so'
+" let g:deoplete#sources#clang#clang_header='/usr/include/clang'
 "}}}
 
 
 " -----------------------------------------------------
-" 4.15 Ctrl-SF settings {{{
-" -----------------------------------------------------
-let g:ctrlsf_default_root='project'
-let g:ctrlsf_populate_qflist=1
-let g:ctrlsf_position='bottom'
-let g:ctrlsf_winsize = '30%'
-let g:ctrlsf_auto_close=0
-let g:ctrlsf_regex_pattern=1
-"}}}
-
-" -----------------------------------------------------
-" 4.16 Javascript libraries syntax settings {{{
-" -----------------------------------------------------
-let g:used_javascript_libs = 'chai,flux,react,underscore'
-"}}}
-
-" -----------------------------------------------------
-" 4.17 Plug settings {{{
+" 4.14 Plug settings {{{
 " -----------------------------------------------------
 let g:plug_timeout=20
 "}}}
 
 " -----------------------------------------------------
-" 4.18 Vim-markdown settings {{{
+" 4.15 Vim-markdown settings {{{
 " -----------------------------------------------------
 let g:markdown_fenced_languages=[
       \'bash=sh',
@@ -963,15 +911,25 @@ let g:markdown_fenced_languages=[
 "}}}
 
 " -----------------------------------------------------
-" 4.19 Colorizer settings {{{
+" 4.16 Colorizer settings {{{
 " -----------------------------------------------------
 let g:colorizer_nomap=1
 "}}}
 
 " -----------------------------------------------------
-" 4.20 Chromatica settings {{{
+" 4.17 lexima settings {{{
 " -----------------------------------------------------
-let g:chromatica#enable_at_startup = 1
+call lexima#add_rule({'char': '$', 'input_after': '$', 'filetype': 'tex'})
+call lexima#add_rule({'char': '$', 'at': '\%#\$', 'leave': 1, 'filetype': 'tex'})
+call lexima#add_rule({'char': '<BS>', 'at': '\$\%#\$', 'delete': 1, 'filetype': 'tex'})
+"}}}
+
+" -----------------------------------------------------
+" 4.18 vimtex settings {{{
+" -----------------------------------------------------
+let g:polyglot_disabled = ['latex']
+let g:latex_view_general_viewer = 'zathura'
+let g:vimtex_view_method = 'zathura'
 "}}}
 
 " ==============================================================================
@@ -979,53 +937,43 @@ let g:chromatica#enable_at_startup = 1
 " ==============================================================================
 
 " -----------------------------------------------------
-" 5.1 Unite and extensions {{{
+" 5.1 Denite and extensions {{{
 " -----------------------------------------------------
 
 " Custom mappings for the unite buffer
-autocmd FileType unite call Unite_settings()
-function! Unite_settings()
-  " Enable navigation with control-j and control-k in insert mode
-  imap <silent> <buffer> <C-j> <Plug>(unite_select_next_line)
-  imap <silent> <buffer> <C-k> <Plug>(unite_select_previous_line)
-  " Runs 'splits' action by <C-s> and <C-v>
-  imap <silent> <buffer> <expr> <C-s> unite#do_action('split')
-  imap <silent> <buffer> <expr> <C-v> unite#do_action('vsplit')
-  " Exit with escape
-  nmap <silent> <buffer> <ESC> <Plug>(unite_exit)
-  " Mark candidates
-  vmap <silent> <buffer> m <Plug>(unite_toggle_mark_selected_candidates)
-  nmap <silent> <buffer> m <Plug>(unite_toggle_mark_current_candidate)
-endfunction
+
+call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
+call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+
+call denite#custom#map('default', '<C-s>', '<denite:action:split>', 'noremap')
+call denite#custom#map('default', '<C-v>', '<denite:action:vsplit>', 'noremap')
 
 " Search files recursively ([o]pen file)
-nnoremap <silent> <leader>o :call UniteFileRec()<CR>
+nnoremap <silent> <leader>o :Denite -buffer-name=file-recursive-search file_rec<CR>
 " Browse [f]iles in CWD
-nnoremap <silent> <leader>f :call UniteFileBrowse()<CR>
-" [U]nite sources
-nnoremap <silent> <leader>u :call UniteSources()<CR>
+nnoremap <silent> <leader>f :Denite -buffer-name=project-files file<CR>
+" Denite sources
+"nnoremap <silent> <leader>u :call UniteSources()<CR>
 " Search between open files - [b]uffers
-nnoremap <silent> <leader>b :call UniteBuffers()<CR>
+nnoremap <silent> <leader>b :Denite -buffer-name=buffers buffer<CR>
 " Search in current file ou[t]line (tags in current file)
-nnoremap <silent> <leader>t :call UniteTags()<CR>
+nnoremap <silent> <leader>t :Denite -buffer-name=tags tag<CR>
 " Search in [l]ines on current buffer
-nnoremap <silent> <leader>l :call UniteLineSearch()<CR>
+nnoremap <silent> <leader>l :Denite -buffer-name=line-search line<CR>
 " Search in [y]ank history
-nnoremap <silent> <leader>y :call UniteYankHistory()<CR>
+nnoremap <silent> <leader>y :Denite -buffer-name=yank-history neoyank<CR>
 " Search in [r]egisters
-nnoremap <silent> <leader>r :call UniteRegisters()<CR>
-" Search in opened [w]indow splits
-nnoremap <silent> <leader>w :call UniteWindows()<CR>
+nnoremap <silent> <leader>r :Denite -buffer-name=registers register<CR>
 " Search in ultisnips [s]nippets
-nnoremap <silent> <leader>s :call UniteSnippets()<CR>
+"nnoremap <silent> <leader>s :Denite -buffer-name=snippets ultisnips<CR>
 " Search in latest [j]ump positions
-nnoremap <silent> <leader>j :call UniteJumps()<CR>
+nnoremap <silent> <leader>j :Denite -buffer-name=jumps jump<CR>
 " Search in my custom unite [m]enu with my commands
-nnoremap <silent> <leader>m :call UniteCustomMenu()<CR>
+nnoremap <silent> <leader>m :Denite -buffer-name=menu menu<CR>
 " Seach in help menu for commands
-nnoremap <silent> <leader>hc :call UniteCommands()<CR>
+nnoremap <silent> <leader>hc :Denite -buffer-name=commands command<CR>
 " Seach in help menu for mappings
-nnoremap <silent> <leader>hm :call UniteMappings()<CR>
+"nnoremap <silent> <leader>hm :call UniteMappings()<CR>
 "}}}
 
 " -----------------------------------------------------
@@ -1088,7 +1036,7 @@ nmap >a <Plug>Argumentative_MoveRight
 " 5.8 Deoplete autocomplete {{{
 " -----------------------------------------------------
 " Insert <TAB> or select next match
-inoremap <silent> <expr> <Tab> TabComplete()
+inoremap <silent> <expr> <Tab> "<C-R>=TabComplete()<CR>"
 " Manually trigger tag autocomplete
 inoremap <silent> <expr> <C-]> ManualTagComplete()
 
@@ -1099,19 +1047,12 @@ else
 endif
 
 " <C-h>, <BS>: close popup and delete backword char
-inoremap <expr><C-h> deolete#mappings#smart_close_popup()."\<C-h>"
+inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
 "}}}
 
 " -----------------------------------------------------
-" 5.9 CtrlSF {{{
-" -----------------------------------------------------
-nnoremap <leader>gg :CtrlSF<Space>
-nnoremap <leader>gG :CtrlSFToggle<Space>
-"}}}
-
-" -----------------------------------------------------
-" 5.10 Vim-Plug {{{
+" 5.9 Vim-Plug {{{
 " -----------------------------------------------------
 nnoremap <leader>pi :PlugInstall<CR>
 nnoremap <leader>pu :PlugUpdate<CR>
@@ -1120,26 +1061,7 @@ nnoremap <leader>pc :PlugClean<CR>
 "}}}
 
 " -----------------------------------------------------
-" 5.11 Ctrl-SF {{{
-" -----------------------------------------------------
-let g:ctrlsf_mapping = {
-      \ "next"    : "n",
-      \ "prev"    : "N",
-      \ "quit"    : "q",
-      \ "openb"   : "",
-      \ "split"   : "s",
-      \ "tab"     : "",
-      \ "tabb"    : "",
-      \ "popen"   : "",
-      \ "pquit"   : "",
-      \ "loclist" : "",
-      \ }
-
-nnoremap <silent> ,g :call searchCurrentWordWithAg()<CR>
-"}}}
-
-" -----------------------------------------------------
-" 5.12 Fugitive {{{
+" 5.10 Fugitive {{{
 " -----------------------------------------------------
 nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gc :Gcommit --verbose<CR>
@@ -1148,13 +1070,13 @@ nnoremap <leader>gd :Gvdiff<CR>
 "}}}
 
 " -----------------------------------------------------
-" 5.13 BufOnly {{{
+" 5.11 BufOnly {{{
 " -----------------------------------------------------
 nnoremap ,C :Bonly<CR>
 "}}}
 
 " -----------------------------------------------------
-" 5.14 Gitv {{{
+" 5.12 Gitv {{{
 " -----------------------------------------------------
 nnoremap <leader>gh :Gitv!<CR>
 "}}}
@@ -1182,24 +1104,16 @@ colorscheme one
 " highlight Normal guibg=#1d1f21
 " highlight Normal guibg=#282c34
 " highlight Normal guibg=#fbf1c7 guifg=#494b53
-autocmd! ColorScheme * if &background ==# 'dark'  | highlight Normal guibg=#282c34 | else | highlight Normal guibg=#fafafa | endif
+"autocmd! ColorScheme * if &background ==# 'dark'  | highlight Normal guibg=#282c34 | else | highlight Normal guibg=#fafafa | endif
 "}}}
 
 " Highlight VCS conflict markers {{{
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 "}}}
 
-" Highlight term cursor differently {{{
-" highlight TermCursor ctermfg=green guifg=green
-"}}}
-
 " Listchars highlighting {{{
 " highlight NonText ctermfg=235 guifg=gray
 " highlight SpecialKey ctermfg=235 guifg=gray
-"}}}
-
-" Remove underline in folded lines {{{
-" hi! Folded term=NONE cterm=NONE gui=NONE ctermbg=NONE
 "}}}
 
 " Link highlight groups to improve buftabline colors {{{
@@ -1223,8 +1137,9 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 autocmd FileType vim setlocal keywordprg=:help
 "}}}
 
-" Turn spellcheck on for markdown files {{{
+" Turn spellcheck on for text files {{{
 autocmd BufNewFile,BufRead *.md setlocal spell
+autocmd BufNewFile,BufRead *.tex setlocal spell
 "}}}
 
 " Remove trailing whitespaces automatically before save {{{
@@ -1235,7 +1150,7 @@ autocmd BufWritePre * call StripTrailingWhitespaces()
 autocmd VimResized * :wincmd =
 "}}}
 
-" Make sure Vim returns to the same line when you reopen a file. Thanks, Amit and Steve Losh. {{{
+" Make sure Vim returns to the same line when you reopen a file. {{{
 augroup line_return
   au!
   au BufReadPost *
@@ -1259,33 +1174,17 @@ autocmd! BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc,init.vim nested
 " -----------------------------------------------------
 " 7.1 Run linters after save {{{
 " -----------------------------------------------------
-" npm install -g eslint
 autocmd BufWritePost *.js Neomake eslint
-" npm install -g jsonlint
 autocmd BufWritePost *.json Neomake jsonlint
-" npm install -g typescript
-autocmd BufWritePost *.ts Neomake tsc
-" gem install rubocop
-autocmd BufWritePost *.rb Neomake rubocop
-" sudo apt-get install elixir
-autocmd BufWritePost *.ex Neomake elixir
-" apt-get install tidy
 autocmd BufWritePost *.html Neomake tidy
-" gem install haml_lint
-autocmd BufWritePost *.haml Neomake hamllint
-" gem install scsslint
-autocmd BufWritePost *.scss Neomake scsslint
-" gem install mdl
 autocmd BufWritePost *.md Neomake mdl
-" apt-get install shellcheck
 autocmd BufWritePost *.sh Neomake shellcheck
-" pip3 install vim-vint
-"autocmd BufWritePost *.vim Neomake vint
-" apt-get install clang-tidy
+autocmd BufWritePost *.vim Neomake vint
 autocmd BufWritePost *.{c,h} Neomake clang
 autocmd BufWritePost *.cpp Neomake clang
-" sudo apt-get install rust
 autocmd BufWritepost *.rs Neomake rustc
+autocmd BufWritepost *.tex Neomake chktex lacheck
+autocmd BufWritepost *.py flake8
 "}}}
 
 " ==============================================================================
@@ -1416,7 +1315,11 @@ function! TabComplete() abort
     if !l:col || getline('.')[l:col - 1] !~# '\k'
       return "\<TAB>"
     else
-      return deoplete#mappings#manual_complete()
+      let snippet = UltiSnips#ExpandSnippetOrJump()
+      if g:ulti_expand_or_jump_res
+        return snippet
+      else
+        return deoplete#mappings#manual_complete()
     endif
   endif
 endfunction
@@ -1446,112 +1349,9 @@ function! UniteSources() abort
   execute 'Unite -no-split -buffer-name=sources -start-insert source'
 endfunction
 
-function! UniteMRUs() abort
-  execute 'Unite -no-split -buffer-name=most-recently-used -start-insert neomru/file'
-endfunction
-
-function! UniteFileBrowse() abort
-  execute 'Unite -no-split -buffer-name=project-files -start-insert file'
-endfunction
-
-function! UniteFileRec() abort
-  execute 'Unite -no-split -ignorecase -buffer-name=file-recursive-search -start-insert file_rec/neovim'
-endfunction
-
-function! UniteBuffers() abort
-  execute 'Unite -no-split -buffer-name=buffers -start-insert buffer'
-endfunction
-
-function! UniteOutline() abort
-  execute 'Unite -no-split -buffer-name=symbols -start-insert outline'
-endfunction
-
-function! UniteTags() abort
-  execute 'Unite -no-split -buffer-name=tags -start-insert tag'
-endfunction
-
-function! UniteHistory() abort
-  execute 'Unite -no-split -buffer-name=edit-history change'
-endfunction
-
-function! UniteLineSearch() abort
-  execute 'Unite -no-split -buffer-name=line-search -start-insert line'
-endfunction
-
-function! UniteYankHistory() abort
-  execute 'Unite -no-split -buffer-name=yank-history history/yank'
-endfunction
-
-function! UniteRegisters() abort
-  execute 'Unite -no-split -buffer-name=registers register'
-endfunction
-
-function! UniteWindows() abort
-  execute 'Unite -no-split -buffer-name=splits window'
-endfunction
-
-function! UniteSnippets() abort
-  execute 'Unite -no-split -buffer-name=snippets -start-insert ultisnips'
-endfunction
-
-function! UniteCustomMenu() abort
-  execute 'Unite -no-split -buffer-name=menu -start-insert menu'
-endfunction
-
-function! UniteJumps() abort
-  execute 'Unite -no-split -buffer-name=jumps -start-insert jump'
-endfunction
-
-function! UniteCommands() abort
-  execute 'Unite -no-split -buffer-name=commands -start-insert command'
-endfunction
-
 function! UniteMappings() abort
   execute 'Unite -no-split -buffer-name=mappings -start-insert mapping'
 endfunction
-
-" Format function
-" Needs: npm install js-beautify, gem install ruby-beautify, python
-function! FormatFile() abort
-  let l:line = line('.')
-  let l:col = col('.')
-  let l:command_prefix = '%!'
-
-  if &filetype ==? 'javascript.jsx'
-    let l:command = 'js-beautify -X -f -'
-  elseif &filetype ==? 'html'
-    let l:command = 'html-beautify -f -'
-  elseif &filetype ==? 'css'
-    let l:command = 'css-beautify -f -'
-  elseif &filetype ==? 'json'
-    let l:command = 'python -m json.tool'
-  elseif &filetype ==? 'ruby'
-    let l:command = 'ruby-beautify -c 2 -s'
-  else
-    " Basic vim format fallback
-    normal! gg=G
-  endif
-
-  if exists('l:command')
-    execute l:command_prefix . l:command
-  endif
-
-  call cursor(l:line, l:col)
-endfunction
-
-" Annotate file function (only ruby support for now)
-function! AnnotateFile() abort
-  let l:command_prefix = '%!'
-
-  if &filetype ==? 'ruby'
-    let l:command = 'seeing_is_believing -x'
-  endif
-
-  if exists('l:command')
-    execute l:command_prefix . l:command
-  endif
-endfunction
-
 
 " Modified function for Lightline statusline
 function! LightLineModified() abort
@@ -1570,7 +1370,6 @@ endfunction
 function! LightLineMode() abort
   let l:fname = expand('%:t')
   return l:fname =~? 'NERD_tree' ? 'NT' :
-        \ &filetype ==? 'unite' ? 'Unite' :
         \ winwidth(0) > 70 ? g:lightline#mode() : ''
 endfunction
 
@@ -1613,7 +1412,6 @@ function! HowDoI() abort
 endfunction
 
 " Search current word with CtrlSF
-" Inspired by github.com/zenbro
 function! SearchCurrentWordWithAg() abort
   execute 'CtrlSF' expand('<cword>')
 endfunction

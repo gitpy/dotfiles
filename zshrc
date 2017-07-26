@@ -57,6 +57,9 @@ plugins=(git extract)
 # User configuration
 
   export PATH="/home/cp/torch/install/bin:/home/cp/torch/install/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
+
+  export EDITOR=nvim
+
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -85,6 +88,8 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+eval "$(fasd --init auto)"
 
 alias tmux="env TERM=xterm-256color tmux"
 
@@ -156,4 +161,85 @@ alias pacimpl="sudo /usr/bin/pacman -D --asdep"	# 'mark as [impl]icit'	- mark on
 
 # '[r]emove [o]rphans' - recursively remove ALL orphaned packages
 alias pacro="/usr/bin/pacman -Qtdq > /dev/null && sudo /usr/bin/pacman -Rs \$(/usr/bin/pacman -Qtdq | sed -e ':a;N;$!ba;s/\n/ /g')"
+
+
+
+fh() {
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
+}
+
+fkill() {
+  local pid
+  pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+
+  if [ "x$pid" != "x" ]; then
+    echo $pid | xargs kill -${1:-9}
+  fi
+}
+
+
+unalias z
+z() {
+  local dir
+  dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+}
+
+zf() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  if [ -n "$dir" ]; then
+    cd "${dir}"
+  fi
+}
+
+
+el() {
+  local file
+
+  file=(${(f)"$(locate -Ai -0 $@ | grep -z -vE '~$' | fzf --read0 -0 -1 +m)"})
+
+  if [ -n "$file" ]; then
+    $EDITOR -- "$file"
+  fi
+}
+
+ef() {
+  local file
+  file=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type f -print 2> /dev/null | fzf -0 -1 +m) &&
+  if [ -n "$file" ]; then
+    $EDITOR -- "$file"
+  fi
+}
+
+
+ol() {
+  local file
+
+  file=(${(f)"$(locate -Ai -0 $@ | grep -z -vE '~$' | fzf --read0 -0 -1 +m)"})
+
+  if [ -n "$file" ]; then
+    mimeopen -- "$file" & disown
+  fi
+}
+
+of() {
+  local file
+  file=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type f -print 2> /dev/null | fzf -0 -1 +m) &&
+  if [ -n "$file" ]; then
+    mimeopen -- "$file" & disown
+  fi
+}
+
+ox() {
+  local out file key
+  IFS=$'\n' out=($(fzf-tmux --query="$1" --exit-0 --expect=ctrl-o,ctrl-e))
+  key=$(head -1 <<< "$out")
+  file=$(head -2 <<< "$out" | tail -1)
+  if [ -n "$file" ]; then
+    [ "$key" = ctrl-o ] && mimeopen "$file" & disown || ${EDITOR:-nvim} "$file"
+  fi
+}
 

@@ -11,6 +11,9 @@ function setUpZsh
 setUpZsh
 
 
+mkdir ~/.config/nvim
+mkdir ~/.config/termite
+
 ln -sf $config_path/bashrc ~/.bashrc
 ln -sf $config_path/vimrc ~/.config/nvim/init.vim
 ln -sf $config_path/tmux.conf ~/.tmux.conf
