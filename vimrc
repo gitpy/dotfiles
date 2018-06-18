@@ -850,9 +850,6 @@ let g:deoplete#disable_auto_complete = 1
 
 set completeopt=noselect,menuone,longest
 
-call deoplete#custom#set('_', 'matchers', ['matcher_head'])
-call deoplete#custom#set('ultisnips', 'matchers', ['matcher_fuzzy'])
-
 let g:deoplete#ignore_sources = {}
 let g:deoplete#ignore_sources._ = ['buffer']
 
@@ -874,8 +871,8 @@ let g:deoplete#omni#input_patterns.tex = '\\(?:'
       \ . '|\w*'
       \ .')'
 
-" let g:deoplete#sources={}
-" let g:deoplete#sources._    = ['buffer', 'file', 'ultisnips']
+let g:deoplete#sources={}
+let g:deoplete#sources._    = ['buffer', 'file', 'ultisnips']
 " let g:deoplete#sources.ruby = ['buffer', 'member', 'file', 'ultisnips']
 " let g:deoplete#sources.vim  = ['buffer', 'member', 'file', 'ultisnips']
 " let g:deoplete#sources['javascript.jsx'] = ['buffer', 'member', 'file', 'ultisnips']
@@ -886,6 +883,10 @@ let g:deoplete#omni#input_patterns.tex = '\\(?:'
 " let g:deoplete#sources.cpp = ['buffer', 'member', 'file', 'omni', 'ultisnips']
 " let g:deoplete#sources#clang#libclang_path='/usr/lib/libclang.so'
 " let g:deoplete#sources#clang#clang_header='/usr/include/clang'
+
+call deoplete#custom#source('_', 'matchers', ['matcher_head'])
+call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
+
 "}}}
 
 
