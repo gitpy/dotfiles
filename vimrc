@@ -41,27 +41,6 @@ Plug 'tpope/vim-sleuth'
 Plug 'sheerun/vim-polyglot'
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
-" Ruby/Rails {{{
-" ---------------------------------------------------------------------------------------------------------------------
-
-" Ruby support (plays nicely with tpope/rbenv-ctags)
-"Plug 'vim-ruby/vim-ruby'
-" Minitest syntax
-"Plug 'sunaku/vim-ruby-minitest'
-" Rails support (:A, :R, :Rmigration, :Rextract)
-"Plug 'tpope/vim-rails', { 'for': ['ruby', 'eruby', 'haml', 'slim'] }
-" Bundler support (plays nicely with tpope/gem-ctags)
-"Plug 'tpope/vim-bundler', { 'for': ['ruby', 'eruby', 'haml', 'slim'] }
-"}}}
-
-" ---------------------------------------------------------------------------------------------------------------------
-" HTML/CSS {{{
-" ---------------------------------------------------------------------------------------------------------------------
-" Color highlighter
-"Plug 'lilydjwg/colorizer', { 'for': ['css', 'sass', 'scss', 'less', 'html', 'xhtml', 'javascript', 'javascript.jsx'] }
-"}}}
-
 
 " -----------------------------------------------------
 " C/C++ {{{
@@ -97,8 +76,6 @@ Plug 'Shougo/neomru.vim'
 " Interface improving {{{
 " ---------------------------------------------------------------------------------------------------------------------
 
-" Nerdtree file browser
-Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeFind', 'NERDTreeToggle'] }
 " Lightline (simple status line)
 Plug 'itchyny/lightline.vim'
 " Buffers tabline
@@ -146,13 +123,9 @@ Plug 'kana/vim-textobj-user'
 " Argument text object (via, >a)
 Plug 'PeterRincker/vim-argumentative'
 " Indent text object (vii)
-Plug 'kana/vim-textobj-indent'
+"Plug 'kana/vim-textobj-indent'
 " Line text object (vil)
 Plug 'kana/vim-textobj-line'
-" Entire buffer text object (vae)
-Plug 'kana/vim-textobj-entire'
-" Ruby block text object (vir)
-Plug 'nelstrom/vim-textobj-rubyblock'
 " Comment text object (vac)
 Plug 'glts/vim-textobj-comment'
 " Improved targets line cin) next parens
@@ -205,8 +178,6 @@ Plug 'chip/vim-fat-finger'
 Plug 'tpope/vim-repeat'
 " Delete all but current buffer
 Plug 'vim-scripts/BufOnly.vim', { 'on': 'Bonly' }
-" Populate arglist with buffers in quickfix list
-Plug 'nelstrom/vim-qargs', { 'on': 'Qargs' }
 "}}}
 
 call plug#end()
@@ -234,6 +205,7 @@ set virtualedit=block                       " To be able to select past EOL in v
 set nojoinspaces                            " No extra space when joining a line which ends with . ? !
 set scrolloff=5                             " Scroll when closing to top or bottom of the screen
 set updatetime=1000                         " Update time used to create swap file or other things
+set mouse=a                                 " Enables mouse
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
@@ -518,10 +490,8 @@ vnoremap ,s :!sort<CR>
 " 3.5 F-key actions {{{
 " -----------------------------------------------------
 
-" NERDTree wrapper
-nnoremap <silent> <F1> :call NerdWrapper()<CR>
-" Free
-" nnoremap <silent> <F2>
+" Toggle netrw
+nnoremap <silent> <F2> :Lexplore<Cr>
 " Paste mode toggling
 nnoremap <silent> <F3> :set paste!<CR> :set paste?<CR>
 " Toggle spelling on and off
@@ -929,8 +899,13 @@ call lexima#add_rule({'char': '<BS>', 'at': '\$\%#\$', 'delete': 1, 'filetype': 
 " 4.18 vimtex settings {{{
 " -----------------------------------------------------
 let g:polyglot_disabled = ['latex']
-let g:latex_view_general_viewer = 'zathura'
-let g:vimtex_view_method = 'zathura'
+if executable('zathura')
+  let g:latex_view_general_viewer = 'zathura'
+  let g:vimtex_view_method = 'zathura'
+else
+  let g:latex_view_general_viewer = 'SumatraPDF'
+  let g:vimtex_view_method = 'general'
+endif
 "}}}
 
 " ==============================================================================
@@ -1193,8 +1168,8 @@ autocmd BufWritepost *.py flake8
 " ==============================================================================
 
 " Informative echo line
-function! ShowToggles() abort
-  echom '<F1> NERDTree | <F2> Free | <F3> Paste mode | <F4> Spellcheck | <F5> Reload rc | <F6> Search HL |' .
+function! SjhowToggles() abort
+  echom '<F1> free | <F2> netrw | <F3> Paste mode | <F4> Spellcheck | <F5> Reload rc | <F6> Search HL |' .
         \' <F7> Whitechars | <F8> Vertical Term | <F9> Fire REST Request | <F10> Free  | <F11> How do I |' .
         \' <F12> This message'
 endfunction
@@ -1216,12 +1191,12 @@ function! Profile() abort
   echom 'Profiling started (will last until you quit neovim).'
 endfunction
 
-" When cycling ignore NERDTree and Tagbar
+" When cycling ignore netrw
 function! IntelligentCycling() abort
   " Cycle firstly
   wincmd w
   " Handle where you are now
-  if &filetype ==# 'nerdtree'
+  if &filetype ==# 'netrw'
     call IntelligentCycling()
   endif
   " If in terminal buffer start insert
@@ -1260,17 +1235,6 @@ function! RunCurrentFile() abort
 
   if exists('command')
     execute ':terminal ' . l:command
-  endif
-endfunction
-
-" Run NERDTreeFind or Toggle based on current buffer
-function! NerdWrapper() abort
-  if &filetype ==# '' " Empty buffer
-    :NERDTreeToggle
-  elseif expand('%:t') =~? 'NERD_tree' " In NERD_tree buffer
-    wincmd w
-  else " Normal file buffer
-    :NERDTreeFind
   endif
 endfunction
 
@@ -1370,7 +1334,7 @@ endfunction
 " Mode function for Lightline statusline
 function! LightLineMode() abort
   let l:fname = expand('%:t')
-  return l:fname =~? 'NERD_tree' ? 'NT' :
+  return &filetype ==?  'netrw' ? 'NETRW' :
         \ winwidth(0) > 70 ? g:lightline#mode() : ''
 endfunction
 
@@ -1392,8 +1356,7 @@ endfunction
 " File name function for Lightline statusline
 function! LightLineFilename() abort
   let l:fname = expand('%:t')
-  return l:fname =~? 'NERD_tree' ? 'NERDTree' :
-        \ &filetype ==? 'unite' ? g:unite#get_status_string() :
+  return &filetype ==? 'unite' ? g:unite#get_status_string() :
         \ ('' !=# l:fname ? l:fname : '[No Name]') .
         \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
 endfunction

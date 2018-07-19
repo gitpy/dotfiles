@@ -1,68 +1,15 @@
 # Path to your oh-my-zsh installation.
-  export ZSH=/home/cp/.oh-my-zsh
-
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="spaceship"
-# SPACESHIP_PROMPT_ADD_NEWLINE=false
-SPACESHIP_PROMPT_SYMBOL="❯"
-
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git extract)
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
 
 # User configuration
 
-  export PATH="/home/cp/torch/install/bin:/home/cp/torch/install/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl"
+  export PATH="/bin:/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:$HOME/.cargo/bin"
 
   export EDITOR=nvim
 
 # export MANPATH="/usr/local/man:$MANPATH"
-
-source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -74,24 +21,15 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='mvim'
 # fi
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
 
-eval "$(fasd --init auto)"
-
-alias tmux="env TERM=xterm-256color tmux"
+alias tmux='env TERM=xterm-256color tmux'
+alias sf='sk'
 
 ## Modified commands ## {{{
 alias grep='grep --color=auto'
@@ -165,12 +103,12 @@ alias pacro="/usr/bin/pacman -Qtdq > /dev/null && sudo /usr/bin/pacman -Rs \$(/u
 
 
 fh() {
-  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
+  print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | sf +s --tac | sed 's/ *[0-9]* *//')
 }
 
 fkill() {
   local pid
-  pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+  pid=$(ps -ef | sed 1d | sf -m | awk '{print $2}')
 
   if [ "x$pid" != "x" ]; then
     echo $pid | xargs kill -${1:-9}
@@ -178,16 +116,15 @@ fkill() {
 }
 
 
-unalias z
 z() {
   local dir
-  dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+  dir="$(fasd -Rdl "$1" | sf -1 -0 --no-sort --no-multi)" && cd "${dir}" || return 1
 }
 
 zf() {
   local dir
   dir=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type d -print 2> /dev/null | fzf +m) &&
+                  -o -type d -print 2> /dev/null | sf --no-multi) &&
   if [ -n "$dir" ]; then
     cd "${dir}"
   fi
@@ -197,7 +134,7 @@ zf() {
 el() {
   local file
 
-  file=(${(f)"$(locate -Ai -0 $@ | grep -z -vE '~$' | fzf --read0 -0 -1 +m)"})
+  file=(${(f)"$(locate -Ai -0 $@ | grep -z -vE '~$' | sf --read0 -0 -1 --no-multi)"})
 
   if [ -n "$file" ]; then
     $EDITOR -- "$file"
@@ -207,7 +144,7 @@ el() {
 ef() {
   local file
   file=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type f -print 2> /dev/null | fzf -0 -1 +m) &&
+                  -o -type f -print 2> /dev/null | sf -0 -1 --no-multi) &&
   if [ -n "$file" ]; then
     $EDITOR -- "$file"
   fi
@@ -217,7 +154,7 @@ ef() {
 ol() {
   local file
 
-  file=(${(f)"$(locate -Ai -0 $@ | grep -z -vE '~$' | fzf --read0 -0 -1 +m)"})
+  file=(${(f)"$(locate -Ai -0 $@ | grep -z -vE '~$' | sf --read0 -0 -1 --no-multi)"})
 
   if [ -n "$file" ]; then
     mimeopen -- "$file" & disown
@@ -227,7 +164,7 @@ ol() {
 of() {
   local file
   file=$(find ${1:-.} -path '*/\.*' -prune \
-                  -o -type f -print 2> /dev/null | fzf -0 -1 +m) &&
+                  -o -type f -print 2> /dev/null | sf -0 -1 --no-multi) &&
   if [ -n "$file" ]; then
     mimeopen -- "$file" & disown
   fi
