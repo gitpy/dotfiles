@@ -19,13 +19,17 @@ call plug#begin('~/.config/nvim/plugged')
 " Language agnostic plugins {{{
 " ---------------------------------------------------------------------------------------------------------------------
 
+" Language Server Protocol
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
 " Asynchronous maker and linter (needs linters to work)
 Plug 'benekastah/neomake', { 'on': ['Neomake'] }
 " Formatter
 Plug 'sbdchd/neoformat'
 " Autocomplete
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-clang'
 " Automatically closing pair stuff
 Plug 'cohama/lexima.vim'
 " Snippet support (C-j)
@@ -122,8 +126,6 @@ Plug 'christoomey/vim-titlecase'
 Plug 'kana/vim-textobj-user'
 " Argument text object (via, >a)
 Plug 'PeterRincker/vim-argumentative'
-" Indent text object (vii)
-"Plug 'kana/vim-textobj-indent'
 " Line text object (vil)
 Plug 'kana/vim-textobj-line'
 " Comment text object (vac)
@@ -447,7 +449,6 @@ nnoremap <A-j> :m +1<CR>
 nnoremap ]t :tn<CR>
 nnoremap [t :tp<CR>
 nnoremap ,ts :ts<CR>
-nnoremap ,tg :GTags<CR>
 
 " QuickFix navigation
 nnoremap ]q :cnext<CR>
@@ -542,9 +543,6 @@ cnoremap qq qall
 " 3.8 Custom commands and functions {{{
 " -----------------------------------------------------
 
-" Generate tags definitions
-command! GTags :call GenerateCtags()
-
 " Open notes
 command! Notes :call OpenNotes()
 
@@ -581,9 +579,19 @@ map ß /
 " ======================================================================================================================
 
 " -----------------------------------------------------
-" 4.1 Auto-switch sk -> en keyboard layouts {{{
+" 4.1 Language Server Protocol {{{
 " -----------------------------------------------------
-let g:utils_autoswitch_kb_layout=0
+set hidden
+let g:LanguageClient_serverCommands = {
+  \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+  \ 'c': ['clangd-6.0'],
+  \ }
+
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+" Or map each action separately
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 "}}}
 
 " -----------------------------------------------------
@@ -642,7 +650,6 @@ let s:dmenus.utils.command_candidates = [
     \       ['Run XMPFilter', 'Annotate'],
     \       ['Format file', 'Format'],
     \       ['Run file', 'Run'],
-    \       ['Generate Ctags', 'GTags'],
     \       ['Show notes', 'Notes'],
     \       ['Show highlight groups', 'so $VIMRUNTIME/syntax/hitest.vim'],
     \     ]
@@ -820,10 +827,6 @@ let g:deoplete#disable_auto_complete = 1
 
 set completeopt=noselect,menuone,longest
 
-let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources._ = ['buffer']
-
-
 if !exists('g:deoplete#omni#input_patterns')
     let g:deoplete#omni#input_patterns = {}
 endif
@@ -841,18 +844,12 @@ let g:deoplete#omni#input_patterns.tex = '\\(?:'
       \ . '|\w*'
       \ .')'
 
-let g:deoplete#sources={}
-let g:deoplete#sources._    = ['buffer', 'file', 'ultisnips']
-" let g:deoplete#sources.ruby = ['buffer', 'member', 'file', 'ultisnips']
-" let g:deoplete#sources.vim  = ['buffer', 'member', 'file', 'ultisnips']
-" let g:deoplete#sources['javascript.jsx'] = ['buffer', 'member', 'file', 'ultisnips']
-" let g:deoplete#sources.css  = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-" let g:deoplete#sources.scss = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-" let g:deoplete#sources.html = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-" let g:deoplete#sources.c = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-" let g:deoplete#sources.cpp = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-" let g:deoplete#sources#clang#libclang_path='/usr/lib/libclang.so'
-" let g:deoplete#sources#clang#clang_header='/usr/include/clang'
+call deoplete#custom#option('sources', {
+      \ '_': ['buffer', 'file', 'ultisnips'],
+      \'c': ['LanguageClient'],
+      \'cpp': ['LanguageClient'] })
+
+call deoplete#custom#option('ignore_sources', {'_': ['around']})
 
 call deoplete#custom#source('_', 'matchers', ['matcher_head'])
 call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
@@ -1013,13 +1010,11 @@ nmap >a <Plug>Argumentative_MoveRight
 " -----------------------------------------------------
 " Insert <TAB> or select next match
 inoremap <silent> <expr> <Tab> "<C-R>=TabComplete()<CR>"
-" Manually trigger tag autocomplete
-inoremap <silent> <expr> <C-]> ManualTagComplete()
 
-if has("gui_running")
-  inoremap <silent><expr><C-Space> deoplete#mappings#manual_complete()
-else
-  inoremap <silent><expr><C-@> deoplete#mappings#manual_complete()
+inoremap <silent><expr><C-Space> deoplete#mappings#manual_complete()
+
+if has("unix")
+  imap <C-@> <C-Space>
 endif
 
 " <C-h>, <BS>: close popup and delete backword char
@@ -1136,13 +1131,6 @@ augroup line_return
 augroup END
 "}}}
 
-" Keyboard layout switching {{{
-if g:utils_autoswitch_kb_layout == 1
-  autocmd InsertEnter * call SetSKKBLayout()
-  autocmd InsertLeave * call SetUSKBLayout()
-end
-"}}}
-
 " Auto reload config {{{
 autocmd! BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc,init.vim nested so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
 "}}}
@@ -1253,21 +1241,9 @@ function! StripTrailingWhitespaces() abort
   call cursor(l:line, l:col)
 endfunction
 
-" Set SK keyboard layout with qwerty
-function! SetSKKBLayout() abort
-  silent !setxkbmap sk -variant qwerty
-endfunction
-
 " Set US keyboard layout with qwerty
 function! SetUSKBLayout() abort
   silent !setxkbmap us
-endfunction
-
-" Generate ctags and put them into tags directory
-" gem install starscope
-function! GenerateCtags() abort
-  silent execute '!starscope -e ctags'
-  echom 'Tags generated into tags file!'
 endfunction
 
 " Tab wrapper
@@ -1277,7 +1253,8 @@ function! TabComplete() abort
   if pumvisible()
     return "\<C-n>"
   else
-    if !l:col || getline('.')[l:col - 1] !~# '\k'
+    " if !l:col || getline('.')[l:col - 1] !~# '\k'
+    if !l:col || getline('.')[l:col - 1] =~ '\s'
       return "\<TAB>"
     else
       let snippet = UltiSnips#ExpandSnippetOrJump()
@@ -1289,16 +1266,6 @@ function! TabComplete() abort
   endif
 endfunction
 
-" Manual Tag complete
-" TODO: improve to also trigger tag complete after closing popup
-function! ManualTagComplete() abort
-  if pumvisible()
-    return g:deoplete#mappings#close_popup()
-  else
-    return g:deoplete#mappings#manual_complete('tag')
-  endif
-endfunction
-
 " Simple notes management
 function! OpenNotes() abort
   execute ':e ~/dev/notes/vim-notes.md'
@@ -1307,15 +1274,6 @@ endfunction
 " Use omni complete source as default
 function! UseOmniTabWrapper() abort
   inoremap <buffer> <expr> <TAB> InsertTabOmniWrapper()
-endfunction
-
-" Unite commands wrappers
-function! UniteSources() abort
-  execute 'Unite -no-split -buffer-name=sources -start-insert source'
-endfunction
-
-function! UniteMappings() abort
-  execute 'Unite -no-split -buffer-name=mappings -start-insert mapping'
 endfunction
 
 " Modified function for Lightline statusline
@@ -1373,11 +1331,6 @@ function! HowDoI() abort
   if l:query !=# ''
     execute l:command_prefix . l:howdoi . l:query
   endif
-endfunction
-
-" Search current word with CtrlSF
-function! SearchCurrentWordWithAg() abort
-  execute 'CtrlSF' expand('<cword>')
 endfunction
 
 " Reset tabs to 4 spaces
