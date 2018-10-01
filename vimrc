@@ -96,8 +96,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'gregsexton/gitv', { 'on': 'Gitv' }
 " Git changes showed on line numbers
 Plug 'airblade/vim-gitgutter'
-" REST Console
-"Plug 'diepm/vim-rest-console', { 'for': 'rest' }
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
@@ -505,10 +503,6 @@ nnoremap <silent> <F6> :set nohlsearch!<CR> :set nohlsearch?<CR>
 nnoremap <silent> <F7> :set list!<CR> :set list?<CR>
 " New horizontal term buffer
 nnoremap <silent> <F8> :T ls<CR>
-" Fire REST Request
-nnoremap <silent> <F9> :call VrcQuery()<CR>
-" Free
-" nnoremap <silent> <F10>
 " Howdoi integration (pip install howdoi)
 nnoremap <silent> <F11> :call HowDoI()<CR>
 " Echo out toggles legend on <F12>
@@ -682,28 +676,6 @@ let s:dmenus.plug.command_candidates = [
       \       ['Upgrade vim-plug', 'PlugUpgrade'],
       \     ]
 
-" " My unite menu
-" let s:dmenus.denite = {
-"       \     'description' : 'My Denite sources',
-"       \ }
-" let s:dmenus.unite.command_candidates = [
-"       \       ['Denite MRUs', 'call uniteMRUs()'],
-"       \       ['Denite buffers', 'call uniteBuffers()'],
-"       \       ['Denite file browse', 'call uniteFileBrowse()'],
-"       \       ['Denite file search', 'call uniteFileRec()'],
-"       \       ['Denite history', 'call uniteHistory()'],
-"       \       ['Denite line search', 'call uniteLineSearch()'],
-"       \       ['Denite menu', 'call uniteCustomMenu()'],
-"       \       ['Denite registers', 'call uniteRegisters()'],
-"       \       ['Denite snippets', 'call uniteSnippets()'],
-"       \       ['Denite sources', 'call uniteSources()'],
-"       \       ['Denite file tags (symbols)', 'call uniteOutline()'],
-"       \       ['Denite tags', 'call uniteTags()'],
-"       \       ['Denite windows', 'call uniteWindows()'],
-"       \       ['Denite yank history', 'call uniteYankHistory()'],
-"       \       ['Denite jump history', 'call uniteJumps()'],
-"       \     ]
-
 call denite#custom#var('menu', 'menus', s:dmenus)
 "}}}
 
@@ -789,36 +761,20 @@ let g:neoformat_basic_format_align = 1
 "}}}
 
 " -----------------------------------------------------
-" 4.9 Clever F settings {{{
-" -----------------------------------------------------
-let g:clever_f_across_no_line=1
-let g:clever_f_smart_case=1
-let g:clever_f_show_prompt=1
-let g:clever_f_chars_match_any_signs=';'
-"}}}
-
-" -----------------------------------------------------
-" 4.10 Vim Markdown settings {{{
+" 4.9 Vim Markdown settings {{{
 " -----------------------------------------------------
 let g:vim_markdown_no_default_key_mappings=1
 let g:vim_markdown_folding_disabled=1
 "}}}
 
 " -----------------------------------------------------
-" 4.11 Vim REST console settings {{{
-" -----------------------------------------------------
-let g:vrc_set_default_mapping=0
-let g:vrc_output_buffer_name='__RESPONSE__.rest'
-"}}}
-
-" -----------------------------------------------------
-" 4.12 Quick scope settings {{{
+" 4.10 Quick scope settings {{{
 " -----------------------------------------------------
 let g:qs_highlight_on_keys=['f', 'F', 't', 'T']
 "}}}
 
 " -----------------------------------------------------
-" 4.13 Deoplete autocomplete settings {{{
+" 4.11 Deoplete autocomplete settings {{{
 " -----------------------------------------------------
 let g:deoplete#enable_at_startup=1
 let g:deoplete#enable_refresh_always=1
@@ -858,13 +814,13 @@ call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
 
 
 " -----------------------------------------------------
-" 4.14 Plug settings {{{
+" 4.12 Plug settings {{{
 " -----------------------------------------------------
 let g:plug_timeout=20
 "}}}
 
 " -----------------------------------------------------
-" 4.15 Vim-markdown settings {{{
+" 4.13 Vim-markdown settings {{{
 " -----------------------------------------------------
 let g:markdown_fenced_languages=[
       \'bash=sh',
@@ -879,13 +835,13 @@ let g:markdown_fenced_languages=[
 "}}}
 
 " -----------------------------------------------------
-" 4.16 Colorizer settings {{{
+" 4.14 Colorizer settings {{{
 " -----------------------------------------------------
 let g:colorizer_nomap=1
 "}}}
 
 " -----------------------------------------------------
-" 4.17 lexima settings {{{
+" 4.15 lexima settings {{{
 " -----------------------------------------------------
 call lexima#add_rule({'char': '$', 'input_after': '$', 'filetype': 'tex'})
 call lexima#add_rule({'char': '$', 'at': '\%#\$', 'leave': 1, 'filetype': 'tex'})
@@ -893,7 +849,7 @@ call lexima#add_rule({'char': '<BS>', 'at': '\$\%#\$', 'delete': 1, 'filetype': 
 "}}}
 
 " -----------------------------------------------------
-" 4.18 vimtex settings {{{
+" 4.16 vimtex settings {{{
 " -----------------------------------------------------
 let g:polyglot_disabled = ['latex']
 if executable('zathura')
@@ -904,6 +860,8 @@ else
   let g:vimtex_view_method = 'general'
 endif
 "}}}
+
+" }}}
 
 " ==============================================================================
 " 5.0 Plugin mappings {{{
@@ -1158,7 +1116,7 @@ autocmd BufWritepost *.py flake8
 " Informative echo line
 function! SjhowToggles() abort
   echom '<F1> free | <F2> netrw | <F3> Paste mode | <F4> Spellcheck | <F5> Reload rc | <F6> Search HL |' .
-        \' <F7> Whitechars | <F8> Vertical Term | <F9> Fire REST Request | <F10> Free  | <F11> How do I |' .
+        \' <F7> Whitechars | <F8> Vertical Term | <F10> Free  | <F11> How do I |' .
         \' <F12> This message'
 endfunction
 
