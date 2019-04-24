@@ -39,23 +39,9 @@ Plug 'honza/vim-snippets'
 Plug 'tpope/vim-commentary'
 " CamelCase and snake_case motions
 "Plug 'bkad/CamelCaseMotion'
-" Heuristically set indent settings
-Plug 'tpope/vim-sleuth'
 " Better syntax highlighting for many languages
 Plug 'sheerun/vim-polyglot'
 "}}}
-
-
-" -----------------------------------------------------
-" C/C++ {{{
-" -----------------------------------------------------
-
-"  Clang Languages Syntax Highlighting
-" Plug 'arakashic/chromatica.nvim', { 'for': ['c','cpp'] }
-" Plug 'vim-scripts/c.vim'
-Plug 'octol/vim-cpp-enhanced-highlight'
-" }}}
-
 
 " ---------------------------------------------------------------------------------------------------------------------
 " Other languages {{{
@@ -68,7 +54,6 @@ Plug 'lervag/vimtex', { 'for': ['tex','bib'] }
 " ---------------------------------------------------------------------------------------------------------------------
 
 " Denite files, buffers, etc. sources
-" Plug 'Shougo/unite.vim'
 Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
 " History/yank source
 Plug 'Shougo/neoyank.vim'
@@ -108,8 +93,6 @@ Plug 'unblevable/quick-scope'
 Plug 'tpope/vim-surround'
 " Easy alignment
 Plug 'godlygeek/tabular', { 'on':  'Tabularize' }
-" Safely editing in isolation
-Plug 'ferranpm/vim-isolate', { 'on':  ['Isolate', 'UnIsolate'] }
 " Cycling related words via C-a C-x (i.e. true/false)
 Plug 'zef/vim-cycle'
 " Titlecase motion (gt)
@@ -120,14 +103,8 @@ Plug 'christoomey/vim-titlecase'
 " Extra text objects {{{
 " ---------------------------------------------------------------------------------------------------------------------
 
-" Custom text objects creation (dependency for the latter)
-Plug 'kana/vim-textobj-user'
 " Argument text object (via, >a)
 Plug 'PeterRincker/vim-argumentative'
-" Line text object (vil)
-Plug 'kana/vim-textobj-line'
-" Comment text object (vac)
-Plug 'glts/vim-textobj-comment'
 " Improved targets line cin) next parens
 Plug 'wellle/targets.vim'
 "}}}
@@ -137,27 +114,6 @@ Plug 'wellle/targets.vim'
 " ---------------------------------------------------------------------------------------------------------------------
 Plug 'cocopon/lightline-hybrid.vim'
 Plug 'rakr/vim-one'
-" Plug 'KeitaNakamura/neodark.vim'
-" Plug 'tomasr/molokai'
-" Plug 'w0ng/vim-hybrid'
-" Plug 'nanotech/jellybeans.vim'
-" Plug 'sjl/badwolf'
-" Plug 'jdkanani/vim-material-theme'
-" Plug 'dracula/vim'
-" Plug 'rakr/vim-two-firewatch'
-" Plug 'chriskempson/vim-tomorrow-theme'
-" Plug 'w0ng/vim-hybrid'
-" Plug 'jacoborus/tender.vim'
-" Plug 'morhetz/gruvbox'
-" Plug 'jnurmine/Zenburn'
-" Plug 'tpope/vim-vividchalk'
-" Plug 'chriskempson/base16-vim'
-" Plug 'notpratheek/vim-luna'
-" Plug 'kristijanhusak/vim-hybrid-material'
-" Plug 'cseelus/vim-colors-lucid'
-" Plug 'vim-scripts/peaksea'
-" Plug 'mhinz/vim-janah'
-" Plug 'roosta/vim-srcery'
 "}}}
 
 " ---------------------------------------------------------------------------------------------------------------------
@@ -577,7 +533,7 @@ map ß /
 " -----------------------------------------------------
 set hidden
 let g:LanguageClient_serverCommands = {
-  \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+  \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
   \ 'c': ['clangd-6.0'],
   \ }
 
@@ -919,14 +875,7 @@ let g:UltiSnipsJumpBackwardTrigger='<C-k>'
 "}}}
 
 " -----------------------------------------------------
-" 5.3 Isolate {{{
-" -----------------------------------------------------
-vnoremap ,i :Isolate<CR>
-nnoremap ,u :UnIsolate<CR>
-"}}}
-
-" -----------------------------------------------------
-" 5.4 Gitgutter {{{
+" 5.3 Gitgutter {{{
 " -----------------------------------------------------
 nnoremap [h :GitGutterPrevHunk<CR>
 nnoremap ]h :GitGutterNextHunk<CR>
@@ -935,21 +884,21 @@ nnoremap ,hr :GitGutterRevertHunk<CR>
 "}}}
 
 " -----------------------------------------------------
-" 5.5 Expand region {{{
+" 5.4 Expand region {{{
 " -----------------------------------------------------
 vmap v <Plug>(expand_region_expand)
 vmap <C-v> <Plug>(expand_region_shrink)
 "}}}
 
 " -----------------------------------------------------
-" 5.6 Vim Markdown {{{
+" 5.5 Vim Markdown {{{
 " -----------------------------------------------------
 nmap [[ <Plug>Markdown_MoveToPreviousHeader
 nmap ]] <Plug>Markdown_MoveToNextHeader
 "}}}
 
 " -----------------------------------------------------
-" 5.7 Argumentative (use a instead of ,) {{{
+" 5.6 Argumentative (use a instead of ,) {{{
 " -----------------------------------------------------
 xmap ia <Plug>Argumentative_InnerTextObject
 xmap aa <Plug>Argumentative_OuterTextObject
@@ -964,7 +913,7 @@ nmap >a <Plug>Argumentative_MoveRight
 "}}}
 
 " -----------------------------------------------------
-" 5.8 Deoplete autocomplete {{{
+" 5.7 Deoplete autocomplete {{{
 " -----------------------------------------------------
 " Insert <TAB> or select next match
 inoremap <silent> <expr> <Tab> "<C-R>=TabComplete()<CR>"
@@ -981,16 +930,7 @@ inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
 "}}}
 
 " -----------------------------------------------------
-" 5.9 Vim-Plug {{{
-" -----------------------------------------------------
-nnoremap <leader>pi :PlugInstall<CR>
-nnoremap <leader>pu :PlugUpdate<CR>
-nnoremap <leader>pU :PlugUpgrade<CR>
-nnoremap <leader>pc :PlugClean<CR>
-"}}}
-
-" -----------------------------------------------------
-" 5.10 Fugitive {{{
+" 5.8 Fugitive {{{
 " -----------------------------------------------------
 nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gc :Gcommit --verbose<CR>
@@ -999,13 +939,13 @@ nnoremap <leader>gd :Gvdiff<CR>
 "}}}
 
 " -----------------------------------------------------
-" 5.11 BufOnly {{{
+" 5.9 BufOnly {{{
 " -----------------------------------------------------
 nnoremap ,C :Bonly<CR>
 "}}}
 
 " -----------------------------------------------------
-" 5.12 Gitv {{{
+" 5.10 Gitv {{{
 " -----------------------------------------------------
 nnoremap <leader>gh :Gitv!<CR>
 "}}}
@@ -1021,19 +961,9 @@ syntax on
 "}}}
 
 " Color scheme {{{
-" let g:rehash256=1
-set t_Co=256
 set background=dark
-let g:gruvbox_contrast_dark="medium"
-" let g:enable_bold_font = 1
 colorscheme one
-"}}}
 
-" Custom ColorScheme Settings {{{
-" highlight Normal guibg=#1d1f21
-" highlight Normal guibg=#282c34
-" highlight Normal guibg=#fbf1c7 guifg=#494b53
-"autocmd! ColorScheme * if &background ==# 'dark'  | highlight Normal guibg=#282c34 | else | highlight Normal guibg=#fafafa | endif
 "}}}
 
 " Highlight VCS conflict markers {{{
@@ -1114,7 +1044,7 @@ autocmd BufWritepost *.py flake8
 " ==============================================================================
 
 " Informative echo line
-function! SjhowToggles() abort
+function! ShowToggles() abort
   echom '<F1> free | <F2> netrw | <F3> Paste mode | <F4> Spellcheck | <F5> Reload rc | <F6> Search HL |' .
         \' <F7> Whitechars | <F8> Vertical Term | <F10> Free  | <F11> How do I |' .
         \' <F12> This message'
