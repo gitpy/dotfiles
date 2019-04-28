@@ -1050,15 +1050,6 @@ function! ShowToggles() abort
         \' <F12> This message'
 endfunction
 
-" Copy and paste function using xclip
-function! ClipboardYank() abort
-  call system('xclip -i -selection clipboard', @@)
-endfunction
-
-function! ClipboardPaste() abort
-  let @@ = system('xclip -o -selection clipboard')
-endfunction
-
 " Profile neovim and save results to profile.log
 function! Profile() abort
   execute 'profile start profile.log'
