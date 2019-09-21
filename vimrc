@@ -533,7 +533,7 @@ map ß /
 " -----------------------------------------------------
 set hidden
 let g:LanguageClient_serverCommands = {
-  \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+  \ 'rust': ['rls'],
   \ 'c': ['clangd-6.0'],
   \ }
 
@@ -554,12 +554,12 @@ nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 " Use ag if available
 if executable('ag')
-  call denite#custom#var('file_rec', 'command',
+  call denite#custom#var('file/rec', 'command',
     \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
 endif
 if executable('rg')
-  call denite#custom#var('file_rec', 'command',
-    \ ['rg', '--files', '--glob', '!.git', ''])
+  call denite#custom#var('file/rec', 'command',
+    \ ['rg', '--files', '--glob', '!.git'])
 
   call denite#custom#var('grep', 'command', ['rg'])
   call denite#custom#var('grep', 'default_opts',
@@ -572,24 +572,10 @@ endif
 
 call denite#custom#option('default', 'prompt', '>')
 
-call denite#custom#map(
-      \ 'insert',
-      \ '<ESC>',
-      \ '<denite:enter_mode:normal>',
-      \ 'noremap')
-call denite#custom#map(
-      \ 'normal',
-      \ '<ESC>',
-      \ '<denite:quit>',
-      \ 'noremap')
-
 " Add syntax highlighting
 let g:denite_source_line_enable_highlight=1
 
-" Dont override status line
-" let g:denite_force_overwrite_statusline=0
-
-" " Custom denite menus
+" Custom denite menus
 let s:dmenus = {}
 
 " Utils menu
@@ -597,9 +583,6 @@ let s:dmenus.utils = {
     \     'description' : 'Utility commands',
     \ }
 let s:dmenus.utils.command_candidates = [
-    \       ['Run XMPFilter', 'Annotate'],
-    \       ['Format file', 'Format'],
-    \       ['Run file', 'Run'],
     \       ['Show notes', 'Notes'],
     \       ['Show highlight groups', 'so $VIMRUNTIME/syntax/hitest.vim'],
     \     ]
@@ -619,17 +602,6 @@ let s:dmenus.git.command_candidates = [
       \       ['Log', 'Glog'],
       \       ['Visual log', 'Gitv'],
       \       ['Current file visual log', 'Gitv!'],
-      \     ]
-
-" Plug menu
-let s:dmenus.plug = {
-      \     'description' : 'Plugin management commands',
-      \ }
-let s:dmenus.plug.command_candidates = [
-      \       ['Install plugins', 'PlugInstall'],
-      \       ['Update plugins', 'PlugUpdate'],
-      \       ['Clean plugins', 'PlugClean'],
-      \       ['Upgrade vim-plug', 'PlugUpgrade'],
       \     ]
 
 call denite#custom#var('menu', 'menus', s:dmenus)
@@ -759,12 +731,15 @@ let g:deoplete#omni#input_patterns.tex = '\\(?:'
 call deoplete#custom#option('sources', {
       \ '_': ['buffer', 'file', 'ultisnips'],
       \'c': ['LanguageClient'],
-      \'cpp': ['LanguageClient'] })
+      \'cpp': ['LanguageClient'],
+      \'rust': ['LanguageClient'] })
 
 call deoplete#custom#option('ignore_sources', {'_': ['around']})
 
 call deoplete#custom#source('_', 'matchers', ['matcher_head'])
 call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
+
+call deoplete#custom#source('LanguageClient', 'sorters', )
 
 "}}}
 
@@ -829,38 +804,48 @@ endif
 
 " Custom mappings for the unite buffer
 
-call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
-call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+autocmd FileType denite call s:denite_my_settings()
+function! s:denite_my_settings() abort
+  nnoremap <silent><buffer><expr> <CR> denite#do_map('do_action')
+  nnoremap <silent><buffer><expr> d denite#do_map('do_action', 'delete')
+  nnoremap <silent><buffer><expr> <C-s> denite#do_map('do_action', 'split')
+  nnoremap <silent><buffer><expr> <C-v> denite#do_map('do_action', 'vsplit')
+  nnoremap <silent><buffer><expr> p denite#do_map('do_action', 'preview')
+  nnoremap <silent><buffer><expr> q denite#do_map('quit')
+  nnoremap <silent><buffer><expr> <Esc> denite#do_map('quit')
+  nnoremap <silent><buffer><expr> i denite#do_map('open_filter_buffer')
+endfunction
 
-call denite#custom#map('default', '<C-s>', '<denite:action:split>', 'noremap')
-call denite#custom#map('default', '<C-v>', '<denite:action:vsplit>', 'noremap')
+autocmd FileType denite-filter call s:denite_filter_my_settings()
+function! s:denite_filter_my_settings() abort
+  imap <silent><buffer> <esc> <Plug>(denite_filter_quit)
+  inoremap <silent><buffer><expr> <CR> denite#do_map('do_action')
+  inoremap <silent><buffer><expr> <C-s> denite#do_map('do_action', 'split')
+  inoremap <silent><buffer><expr> <C-v> denite#do_map('do_action', 'vsplit')
+endfunction
 
 " Search files recursively ([o]pen file)
-nnoremap <silent> <leader>o :Denite -buffer-name=file-recursive-search file_rec<CR>
+nnoremap <silent> <leader>o :Denite file/rec -start-filter<CR>
 " Browse [f]iles in CWD
-nnoremap <silent> <leader>f :Denite -buffer-name=project-files file<CR>
-" Denite sources
-"nnoremap <silent> <leader>u :call UniteSources()<CR>
+nnoremap <silent> <leader>f :Denite file<CR>
 " Search between open files - [b]uffers
-nnoremap <silent> <leader>b :Denite -buffer-name=buffers buffer<CR>
+nnoremap <silent> <leader>b :Denite buffer<CR>
 " Search in current file ou[t]line (tags in current file)
-nnoremap <silent> <leader>t :Denite -buffer-name=tags tag<CR>
+nnoremap <silent> <leader>t :Denite tag<CR>
 " Search in [l]ines on current buffer
-nnoremap <silent> <leader>l :Denite -buffer-name=line-search line<CR>
+nnoremap <silent> <leader>l :Denite line<CR>
 " Search in [y]ank history
-nnoremap <silent> <leader>y :Denite -buffer-name=yank-history neoyank<CR>
+nnoremap <silent> <leader>y :Denite neoyank<CR>
 " Search in [r]egisters
-nnoremap <silent> <leader>r :Denite -buffer-name=registers register<CR>
+nnoremap <silent> <leader>r :Denite register<CR>
 " Search in ultisnips [s]nippets
 "nnoremap <silent> <leader>s :Denite -buffer-name=snippets ultisnips<CR>
 " Search in latest [j]ump positions
-nnoremap <silent> <leader>j :Denite -buffer-name=jumps jump<CR>
+nnoremap <silent> <leader>j :Denite jump<CR>
 " Search in my custom unite [m]enu with my commands
-nnoremap <silent> <leader>m :Denite -buffer-name=menu menu<CR>
+nnoremap <silent> <leader>m :Denite menu<CR>
 " Seach in help menu for commands
-nnoremap <silent> <leader>hc :Denite -buffer-name=commands command<CR>
-" Seach in help menu for mappings
-"nnoremap <silent> <leader>hm :call UniteMappings()<CR>
+nnoremap <silent> <leader>hc :Denite command<CR>
 "}}}
 
 " -----------------------------------------------------
@@ -918,15 +903,15 @@ nmap >a <Plug>Argumentative_MoveRight
 " Insert <TAB> or select next match
 inoremap <silent> <expr> <Tab> "<C-R>=TabComplete()<CR>"
 
-inoremap <silent><expr><C-Space> deoplete#mappings#manual_complete()
+inoremap <silent><expr><C-Space> deoplete#manual_complete()
 
 if has("unix")
   imap <C-@> <C-Space>
 endif
 
 " <C-h>, <BS>: close popup and delete backword char
-inoremap <expr><C-h> deoplete#mappings#smart_close_popup()."\<C-h>"
-inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
+inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> deoplete#smart_close_popup()."\<C-h>"
 "}}}
 
 " -----------------------------------------------------
@@ -1140,7 +1125,7 @@ function! TabComplete() abort
       if g:ulti_expand_or_jump_res
         return snippet
       else
-        return deoplete#mappings#manual_complete()
+        return deoplete#manual_complete()
     endif
   endif
 endfunction
