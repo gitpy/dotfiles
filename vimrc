@@ -1,10 +1,10 @@
-" ######################################################################################################################
-" ### Neovim Configuration                                                                                           ###
-" ######################################################################################################################
+" ##############################################################################
+" ### Neovim Configuration                                                   ###
+" ##############################################################################
 
-" ======================================================================================================================
+" ==============================================================================
 " 1.0 Plugin manager (Plug) settings {{{
-" ======================================================================================================================
+" ==============================================================================
 
 " Autoinstall {{{
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
@@ -15,9 +15,9 @@ endif
 " }}}
 call plug#begin('~/.config/nvim/plugged')
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Language agnostic plugins {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 
 " Language Server Protocol
 Plug 'autozimu/LanguageClient-neovim', {
@@ -37,21 +37,19 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 " Commenting support (gc)
 Plug 'tpope/vim-commentary'
-" CamelCase and snake_case motions
-"Plug 'bkad/CamelCaseMotion'
 " Better syntax highlighting for many languages
 Plug 'sheerun/vim-polyglot'
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Other languages {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 Plug 'lervag/vimtex', { 'for': ['tex','bib'] }
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Denite fuzzy searcher {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 
 " Denite files, buffers, etc. sources
 Plug 'Shougo/denite.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -61,31 +59,31 @@ Plug 'Shougo/neoyank.vim'
 Plug 'Shougo/neomru.vim'
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Interface improving {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 
-" Lightline (simple status line)
-Plug 'itchyny/lightline.vim'
+" Status line
+Plug 'rbong/vim-crystalline'
 " Buffers tabline
 Plug 'ap/vim-buftabline'
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " External tools integration plugins {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 
 " Fugitive
 Plug 'tpope/vim-fugitive'
-" Git log viewer (Gitv! for file mode)
-Plug 'gregsexton/gitv', { 'on': 'Gitv' }
+" Git log viewer (GV! for file mode)
+Plug 'junegunn/gv.vim', { 'on': 'GV' }
 " Git changes showed on line numbers
-Plug 'airblade/vim-gitgutter'
+Plug 'mhinz/vim-signify', {'on': ['SignifyEnable','SignifyToggle']}
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Text insertion/manipulation {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 
 " Highlight jump characters on f, F, t, T
 Plug 'unblevable/quick-scope'
@@ -95,13 +93,11 @@ Plug 'tpope/vim-surround'
 Plug 'godlygeek/tabular', { 'on':  'Tabularize' }
 " Cycling related words via C-a C-x (i.e. true/false)
 Plug 'zef/vim-cycle'
-" Titlecase motion (gt)
-Plug 'christoomey/vim-titlecase'
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Extra text objects {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 
 " Argument text object (via, >a)
 Plug 'PeterRincker/vim-argumentative'
@@ -109,16 +105,15 @@ Plug 'PeterRincker/vim-argumentative'
 Plug 'wellle/targets.vim'
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Colorschemes {{{
-" ---------------------------------------------------------------------------------------------------------------------
-Plug 'cocopon/lightline-hybrid.vim'
+" ------------------------------------------------------------------------------
 Plug 'rakr/vim-one'
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Other {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 
 " Easily expand selected region
 Plug 'terryma/vim-expand-region'
@@ -132,16 +127,14 @@ Plug 'mhinz/vim-sayonara', { 'on': 'Sayonara' }
 Plug 'chip/vim-fat-finger'
 " More . repeat functionality
 Plug 'tpope/vim-repeat'
-" Delete all but current buffer
-Plug 'vim-scripts/BufOnly.vim', { 'on': 'Bonly' }
 "}}}
 
 call plug#end()
 "}}}
 
-" ======================================================================================================================
+" ==============================================================================
 " 2.0 Basic settings (Neovim defaults: https://neovim.io/doc/user/vim_diff.html#nvim-option-defaults) {{{
-" ======================================================================================================================
+" ==============================================================================
 
 set shell=/bin/zsh                          " Setting shell to zsh
 set number                                  " Line numbers on
@@ -164,75 +157,75 @@ set updatetime=1000                         " Update time used to create swap fi
 set mouse=a                                 " Enables mouse
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " 2.1 Split settings (more natural) {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set splitbelow                              " Splitting a window will put the new window below the current
 set splitright                              " Splitting a window will put the new window right of the current
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" -----------------------------------------------------------------------------
 " 2.2 Timeout settings {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" -----------------------------------------------------------------------------
 " Time out on key codes but not mappings. Basically this makes terminal Vim work sanely. (by Steve Losh)
 set notimeout
 set ttimeout
 set ttimeoutlen=10
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " 2.3 Spelling settings {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set spellfile=~/.config/nvim/dictionary.utf-8.add
 set spelllang=en_us                         " Set language to US English
-set nospell                                 " Disable checking by default (use <F4> to toggle)
+set nospell                                 " Disable checking by default
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " 2.4 Search settings {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set ignorecase                              " Ignore case by default
 set smartcase                               " Make search case sensitive only if it contains uppercase letters
 set wrapscan                                " Search again from top when reached the bottom
 set nohlsearch                              " Don't highlight after search
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " 2.5 Persistent undo settings {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 if has('persistent_undo')
   set undofile
   set undodir=~/.config/nvim/tmp/undo//
 endif
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " 2.6 White characters settings {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set list                                    " Show listchars by default
 set listchars=tab:▸\ ,extends:❯,precedes:❮,trail:·,nbsp:·
 set showbreak=↪
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " 2.7 Filetype settings {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 filetype plugin on
 filetype indent on
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " 2.8 Folding settings {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set foldmethod=marker                       " Markers are used to specify folds.
 set foldlevel=2                             " Start folding automatically from level 2
 set fillchars="fold: "                      " Characters to fill the statuslines and vertical separators
 set fillchars+="vert: "
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " 2.9 Omni completion settings {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set completeopt-=preview                    " Don't show preview scratch buffers
 set wildignore=*.o,*.obj,*~
 set wildignore+=*vim/backups*
@@ -242,9 +235,9 @@ set wildignore+=*.gem
 set wildignore+=tmp/**
 "}}}
 
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " 2.10 Neovim specific settings {{{
-" ---------------------------------------------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 if (has("termguicolors"))
   set termguicolors
 endif
@@ -252,9 +245,9 @@ endif
 
 "}}}
 
-" ======================================================================================================================
+" ==============================================================================
 " 3.0 Mapping settings {{{
-" ======================================================================================================================
+" ==============================================================================
 
 " -----------------------------------------------------
 " 3.1 Setting leader {{{
@@ -340,27 +333,12 @@ vnoremap y y`]
 vnoremap p "_dP`]
 nnoremap p p`]
 
-" Use CamelCaseMotion instead of default motions
-" map <silent> <leader>w <Plug>CamelCaseMotion_w
-" map <silent> <leader>b <Plug>CamelCaseMotion_b
-" map <silent> <leader>e <Plug>CamelCaseMotion_e
-" map <silent> <leader>ge <Plug>CamelCaseMotion_ge
-" sunmap w
-" sunmap b
-" sunmap e
-" sunmap ge
-
 " Fix the cw at the end of line bug default vim has special treatment (:help cw)
 nmap cw ce
 nmap dw de
 
 " Uppercase word in insert mode
 inoremap <C-u> <ESC>mzgUiw`za
-
-" Matching brackets with TAB (using matchit) (Breaks the <C-i> jump)
-map <TAB> %
-silent! unmap [%
-silent! unmap ]%
 
 " Don't cancel visual select when shifting
 xnoremap <  <gv
@@ -384,6 +362,9 @@ vnoremap zf mzzf`zzz
 nnoremap ,w :w<CR>
 nnoremap <silent> ,c :Sayonara!<CR>
 nnoremap <silent> ,q :Sayonara<CR>
+
+"Close all buffers
+nnoremap ,C :bd<CR>
 
 " Yank and paste from clipboard
 nnoremap ,y "+y
@@ -448,19 +429,15 @@ vnoremap ,s :!sort<CR>
 " Toggle netrw
 nnoremap <silent> <F2> :Lexplore<Cr>
 " Paste mode toggling
-nnoremap <silent> <F3> :set paste!<CR> :set paste?<CR>
+nnoremap <silent> <F3> :set paste!<CR>:set paste?<CR>
 " Toggle spelling on and off
-nnoremap <silent> <F4> :set spell!<CR> :set spell?<CR>
+nnoremap <silent> <F4> :set spell!<CR>:set spell?<CR>
 " Source (reload configuration)
 nnoremap <silent> <F5> :source $MYVIMRC<CR>
 " Toggle search highlight
-nnoremap <silent> <F6> :set nohlsearch!<CR> :set nohlsearch?<CR>
+nnoremap <silent> <F6> :set nohlsearch!<CR>:set nohlsearch?<CR>
 " Toggle white characters visibility
-nnoremap <silent> <F7> :set list!<CR> :set list?<CR>
-" New horizontal term buffer
-nnoremap <silent> <F8> :T ls<CR>
-" Howdoi integration (pip install howdoi)
-nnoremap <silent> <F11> :call HowDoI()<CR>
+nnoremap <silent> <F7> :set list!<CR>:set list?<CR>
 " Echo out toggles legend on <F12>
 nnoremap <F12> :call ShowToggles()<CR>
 "}}}
@@ -474,10 +451,6 @@ nnoremap <silent> <C-Right> :call IntelligentVerticalResize('right')<CR>
 nnoremap <silent> <C-Left> :call IntelligentVerticalResize('left')<CR>
 nnoremap <silent> <C-Up> :resize +1<CR>
 nnoremap <silent> <C-Down> :resize -1<CR>
-
-" Buffers navigation and management
-nnoremap <silent> + :bn<CR>
-nnoremap <silent> _ :bp<CR>
 "}}}
 
 " -----------------------------------------------------
@@ -509,7 +482,7 @@ command! Profile :call Profile()
 
 " Retab
 command! Retab :call RetabToFourSpaces()
-"}}}
+" }}}
 
 " -----------------------------------------------------
 " 3.9 German keyboard mappings {{{
@@ -524,9 +497,9 @@ map ß /
 
 "}}}
 
-" ======================================================================================================================
+" ==============================================================================
 " 4.0 Plugins settings {{{
-" ======================================================================================================================
+" ==============================================================================
 
 " -----------------------------------------------------
 " 4.1 Language Server Protocol {{{
@@ -548,10 +521,6 @@ nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 " 4.2 Denite {{{
 " -----------------------------------------------------
 
-" Matcher settings
-" call unite#filters#matcher_default#use(['matcher_fuzzy', 'matcher_hide_current_file'])
-" call unite#filters#sorter_default#use(['sorter_rank'])
-
 " Use ag if available
 if executable('ag')
   call denite#custom#var('file/rec', 'command',
@@ -571,6 +540,7 @@ if executable('rg')
 endif
 
 call denite#custom#option('default', 'prompt', '>')
+call denite#custom#option('default', 'split', 'floating')
 
 " Add syntax highlighting
 let g:denite_source_line_enable_highlight=1
@@ -592,84 +562,76 @@ let s:dmenus.git = {
       \     'description' : 'Git commands',
       \ }
 let s:dmenus.git.command_candidates = [
-      \       ['Stage hunk', 'GitGutterStageHunk'],
-      \       ['Unstage hunk', 'GitGutterRevertHunk'],
+      \       ['Unstage hunk', 'SignifyHunkUndo'],
       \       ['Stage', 'Gwrite'],
       \       ['Status', 'Gstatus'],
       \       ['Diff', 'Gvdiff'],
       \       ['Commit', 'Gcommit --verbose'],
       \       ['Revert', 'Gread'],
       \       ['Log', 'Glog'],
-      \       ['Visual log', 'Gitv'],
-      \       ['Current file visual log', 'Gitv!'],
+      \       ['Visual log', 'GV'],
+      \       ['Current file visual log', 'GV!'],
       \     ]
 
 call denite#custom#var('menu', 'menus', s:dmenus)
 "}}}
 
-" -----------------------------------------------------
-" 4.3 NERDTree {{{
-" -----------------------------------------------------
-let g:NERDTreeMinimalUI=1
-let g:NERDTreeWinSize=50
-let g:NERDTreeAutoDeleteBuffer=1
-let g:NERDTreeShowHidden=1
-let g:NERDTreeHighlightCursorline=0
-let g:NERDTreeRespectWildIgnore=1
-"}}}
 
 " -----------------------------------------------------
-" 4.4 Ultisnips settings {{{
+" 4.3 Ultisnips settings {{{
 " -----------------------------------------------------
 let g:UltiSnipsUsePythonVersion=3
 "}}}
 
 " -----------------------------------------------------
-" 4.5 Gitgutter settings {{{
+" 4.4 Signify settings {{{
 " -----------------------------------------------------
-"let g:gitgutter_map_keys=0
-"let g:gitgutter_max_signs=9999
-"let g:gitgutter_sign_added='+'
-"let g:gitgutter_sign_modified='~'
-"let g:gitgutter_sign_removed='-'
-"let g:gitgutter_sign_modified_removed='~'
-"let g:gitgutter_sign_removed_first_line='-'
+" let g:signify_disable_by_default = 1
+let g:signify_sign_show_count=0
 "}}}
 
 
 " -----------------------------------------------------
-" 4.6 Lightline settings {{{
+" 4.5 CrystalLine settings {{{
 " -----------------------------------------------------
-let g:lightline = {
-      \ 'colorscheme': 'hybrid',
-      \ 'tab': {
-      \   'active': [ 'filename' ],
-      \   'inactive': [ 'filename' ]
-      \ },
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'readonly', 'filename' ] ],
-      \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'filetype', 'fileencoding', 'fileformat' ] ]
-      \ },
-      \ 'component': {
-      \   'readonly': '%{&filetype=="help"?"HELP":&readonly?"RO":""}',
-      \   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
-      \ },
-      \ 'component_function': {
-      \   'mode': 'LightLineMode',
-      \   'filename': 'LightLineFilename',
-      \   'filetype': 'LightLineFiletype',
-      \   'fileformat': 'LightLineFileformat',
-      \   'fileencoding': 'LightLineFileencoding'
-      \ },
-      \ 'component_visible_condition': {
-      \   'readonly': '(&readonly)',
-      \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
-      \ }
-      \ }
+function! StatusLine(current, width)
+  let l:truncate = a:width > 70
+  let l:s = ''
+  let l:file_description = '%w%{&modifiable && &modified?"+":""}%{&readonly?"\ RO":""} '
+  let l:cursor_location = ' %p%% %l:%c '
+
+  if !a:current
+    return '%#Crystalline#' . ' %f' . l:file_description . '%=' . l:cursor_location
+  endif
+
+  let l:s .= crystalline#mode()
+
+  let l:s .= '%#Crystalline#'
+  let l:s .= '%{&paste?" PASTE":""}'
+  let l:s .= ' %t' . l:file_description
+
+  let l:s .= '%#Normal#'
+  " if l:truncate && exists("*fugitive#head")
+  "   let l:s .= ' %{fugitive#head()}'
+  " endif
+
+  let l:s .= '%='
+  if l:truncate
+    let l:s .= ' %{&filetype!=#""?&ft:"no-ft"} %{&fenc!=#""?&fenc:&enc} %{&ff} '
+  endif
+
+  let l:s .= '%#Crystalline#' . l:cursor_location
+
+  return l:s
+endfunction
+
+let g:crystalline_statusline_fn = 'StatusLine'
+let g:crystalline_theme = 'onedark'
+
 "}}}
 
 " -----------------------------------------------------
-" 4.7 Neomake settings {{{
+" 4.6 Neomake settings {{{
 " -----------------------------------------------------
 let g:neomake_verbose=0
 let g:neomake_warning_sign = {
@@ -683,26 +645,19 @@ let g:neomake_error_sign = {
 "}}}
 
 " -----------------------------------------------------
-" 4.8 Neoformat settings {{{
+" 4.7 Neoformat settings {{{
 " -----------------------------------------------------
 let g:neoformat_basic_format_align = 1
 "}}}
 
 " -----------------------------------------------------
-" 4.9 Vim Markdown settings {{{
-" -----------------------------------------------------
-let g:vim_markdown_no_default_key_mappings=1
-let g:vim_markdown_folding_disabled=1
-"}}}
-
-" -----------------------------------------------------
-" 4.10 Quick scope settings {{{
+" 4.8 Quick scope settings {{{
 " -----------------------------------------------------
 let g:qs_highlight_on_keys=['f', 'F', 't', 'T']
 "}}}
 
 " -----------------------------------------------------
-" 4.11 Deoplete autocomplete settings {{{
+" 4.9 Deoplete autocomplete settings {{{
 " -----------------------------------------------------
 let g:deoplete#enable_at_startup=1
 let g:deoplete#enable_refresh_always=1
@@ -736,43 +691,23 @@ call deoplete#custom#option('sources', {
 
 call deoplete#custom#option('ignore_sources', {'_': ['around']})
 
+call deoplete#custom#source('_', 'max_kind_width', 0)
 call deoplete#custom#source('_', 'matchers', ['matcher_head'])
 call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
 
-call deoplete#custom#source('LanguageClient', 'sorters', )
+" call deoplete#custom#source('LanguageClient', 'sorters', [])
 
 "}}}
 
 
 " -----------------------------------------------------
-" 4.12 Plug settings {{{
+" 4.10 Plug settings {{{
 " -----------------------------------------------------
 let g:plug_timeout=20
 "}}}
 
 " -----------------------------------------------------
-" 4.13 Vim-markdown settings {{{
-" -----------------------------------------------------
-let g:markdown_fenced_languages=[
-      \'bash=sh',
-      \'git=gitconfig',
-      \'javascript',
-      \'lua',
-      \'ruby',
-      \'tmux',
-      \'viml=vim',
-      \'xdefaults',
-      \'zsh']
-"}}}
-
-" -----------------------------------------------------
-" 4.14 Colorizer settings {{{
-" -----------------------------------------------------
-let g:colorizer_nomap=1
-"}}}
-
-" -----------------------------------------------------
-" 4.15 lexima settings {{{
+" 4.11 lexima settings {{{
 " -----------------------------------------------------
 call lexima#add_rule({'char': '$', 'input_after': '$', 'filetype': 'tex'})
 call lexima#add_rule({'char': '$', 'at': '\%#\$', 'leave': 1, 'filetype': 'tex'})
@@ -780,7 +715,7 @@ call lexima#add_rule({'char': '<BS>', 'at': '\$\%#\$', 'delete': 1, 'filetype': 
 "}}}
 
 " -----------------------------------------------------
-" 4.16 vimtex settings {{{
+" 4.12 vimtex settings {{{
 " -----------------------------------------------------
 let g:polyglot_disabled = ['latex']
 if executable('zathura')
@@ -802,7 +737,7 @@ endif
 " 5.1 Denite and extensions {{{
 " -----------------------------------------------------
 
-" Custom mappings for the unite buffer
+" Custom mappings for the denite buffer
 
 autocmd FileType denite call s:denite_my_settings()
 function! s:denite_my_settings() abort
@@ -818,10 +753,11 @@ endfunction
 
 autocmd FileType denite-filter call s:denite_filter_my_settings()
 function! s:denite_filter_my_settings() abort
-  imap <silent><buffer> <esc> <Plug>(denite_filter_quit)
+  imap <silent><buffer> <C-j> <Plug>(denite_filter_quit)
   inoremap <silent><buffer><expr> <CR> denite#do_map('do_action')
   inoremap <silent><buffer><expr> <C-s> denite#do_map('do_action', 'split')
   inoremap <silent><buffer><expr> <C-v> denite#do_map('do_action', 'vsplit')
+  nmap <silent><buffer> <esc> <Plug>(denite_filter_quit)
 endfunction
 
 " Search files recursively ([o]pen file)
@@ -860,12 +796,11 @@ let g:UltiSnipsJumpBackwardTrigger='<C-k>'
 "}}}
 
 " -----------------------------------------------------
-" 5.3 Gitgutter {{{
+" 5.3 Signify {{{
 " -----------------------------------------------------
-nnoremap [h :GitGutterPrevHunk<CR>
-nnoremap ]h :GitGutterNextHunk<CR>
-nnoremap ,hs :GitGutterStageHunk<CR>
-nnoremap ,hr :GitGutterRevertHunk<CR>
+nmap [h <plug>(signify-prev-hunk)
+nmap ]h <plug>(signify-next-hunk)
+nnoremap ,hr :SignifyHunkUndo<CR>
 "}}}
 
 " -----------------------------------------------------
@@ -876,14 +811,7 @@ vmap <C-v> <Plug>(expand_region_shrink)
 "}}}
 
 " -----------------------------------------------------
-" 5.5 Vim Markdown {{{
-" -----------------------------------------------------
-nmap [[ <Plug>Markdown_MoveToPreviousHeader
-nmap ]] <Plug>Markdown_MoveToNextHeader
-"}}}
-
-" -----------------------------------------------------
-" 5.6 Argumentative (use a instead of ,) {{{
+" 5.5 Argumentative (use a instead of ,) {{{
 " -----------------------------------------------------
 xmap ia <Plug>Argumentative_InnerTextObject
 xmap aa <Plug>Argumentative_OuterTextObject
@@ -898,7 +826,7 @@ nmap >a <Plug>Argumentative_MoveRight
 "}}}
 
 " -----------------------------------------------------
-" 5.7 Deoplete autocomplete {{{
+" 5.6 Deoplete autocomplete {{{
 " -----------------------------------------------------
 " Insert <TAB> or select next match
 inoremap <silent> <expr> <Tab> "<C-R>=TabComplete()<CR>"
@@ -915,24 +843,18 @@ inoremap <expr><BS> deoplete#smart_close_popup()."\<C-h>"
 "}}}
 
 " -----------------------------------------------------
-" 5.8 Fugitive {{{
+" 5.7 Fugitive {{{
 " -----------------------------------------------------
 nnoremap <leader>gs :Gstatus<CR>
 nnoremap <leader>gc :Gcommit --verbose<CR>
-nnoremap <leader>gc :Gcommit --verbose<CR>
-nnoremap <leader>gd :Gvdiff<CR>
+"}}}
+
 "}}}
 
 " -----------------------------------------------------
-" 5.9 BufOnly {{{
+" 5.9 GV {{{
 " -----------------------------------------------------
-nnoremap ,C :Bonly<CR>
-"}}}
-
-" -----------------------------------------------------
-" 5.10 Gitv {{{
-" -----------------------------------------------------
-nnoremap <leader>gh :Gitv!<CR>
+nnoremap <leader>gh :GV!<CR>
 "}}}
 
 "}}}
@@ -953,18 +875,6 @@ colorscheme one
 
 " Highlight VCS conflict markers {{{
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
-"}}}
-
-" Listchars highlighting {{{
-" highlight NonText ctermfg=235 guifg=gray
-" highlight SpecialKey ctermfg=235 guifg=gray
-"}}}
-
-" Link highlight groups to improve buftabline colors {{{
-" hi! link BufTabLineCurrent Identifier
-" hi! link BufTabLineActive Comment
-" hi! link BufTabLineHidden Comment
-" hi! link BufTabLineFill Comment
 "}}}
 
 " Make Split Line Invisible {{{
@@ -1031,8 +941,7 @@ autocmd BufWritepost *.py flake8
 " Informative echo line
 function! ShowToggles() abort
   echom '<F1> free | <F2> netrw | <F3> Paste mode | <F4> Spellcheck | <F5> Reload rc | <F6> Search HL |' .
-        \' <F7> Whitechars | <F8> Vertical Term | <F10> Free  | <F11> How do I |' .
-        \' <F12> This message'
+        \' <F7> Whitechars | <F12> This message'
 endfunction
 
 " Profile neovim and save results to profile.log
@@ -1138,63 +1047,6 @@ endfunction
 " Use omni complete source as default
 function! UseOmniTabWrapper() abort
   inoremap <buffer> <expr> <TAB> InsertTabOmniWrapper()
-endfunction
-
-" Modified function for Lightline statusline
-function! LightLineModified() abort
-  if &filetype == "help"
-    return ""
-  elseif &modified
-    return "+"
-  elseif &modifiable
-    return ""
-  else
-    return ""
-  endif
-endfunction
-
-" Mode function for Lightline statusline
-function! LightLineMode() abort
-  let l:fname = expand('%:t')
-  return &filetype ==?  'netrw' ? 'NETRW' :
-        \ winwidth(0) > 70 ? g:lightline#mode() : ''
-endfunction
-
-" File format function for Lightline statusline
-function! LightLineFileformat() abort
-  return (winwidth(0) > 70 ? &fileformat : '')
-endfunction
-
-" Filetype function for Lightline statusline
-function! LightLineFiletype() abort
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
-endfunction
-
-" File encoding function for Lightline statusline
-function! LightLineFileencoding() abort
-  return winwidth(0) > 70 ? (strlen(&fileencoding) ? &fileencoding : &encoding) : ''
-endfunction
-
-" File name function for Lightline statusline
-function! LightLineFilename() abort
-  let l:fname = expand('%:t')
-  return &filetype ==? 'unite' ? g:unite#get_status_string() :
-        \ ('' !=# l:fname ? l:fname : '[No Name]') .
-        \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
-endfunction
-
-" Howdoi integration (pip install howdoi)
-function! HowDoI() abort
-  let l:command_prefix = 'read '
-  let l:howdoi = '!howdoi '
-
-  call Inputsave()
-  let l:query = input('How do I: ')
-  call Inputrestore()
-
-  if l:query !=# ''
-    execute l:command_prefix . l:howdoi . l:query
-  endif
 endfunction
 
 " Reset tabs to 4 spaces
